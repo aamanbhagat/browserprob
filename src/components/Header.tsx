@@ -30,6 +30,15 @@ export default function Header() {
           <Link href="/about" className={styles.navLink} onClick={() => setMenuOpen(false)}>
             About
           </Link>
+          <a
+            href="https://browserprobe.app/support"
+            className={styles.supportBtn}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => setMenuOpen(false)}
+          >
+            Support
+          </a>
         </nav>
 
         <button

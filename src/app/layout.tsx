@@ -123,6 +123,19 @@ export default function RootLayout({
             gtag('config', 'G-VSS6DZES93');
           `}
         </Script>
+
+        {/* Ad Tag 1 */}
+        <Script
+          src="https://5gvci.com/act/files/tag.min.js?z=11134976"
+          strategy="afterInteractive"
+          data-cfasync="false"
+        />
+
+        {/* Ad Tag 2 */}
+        <Script id="ad-tag-2" strategy="afterInteractive">
+          {`(function(s){s.dataset.zone='11134981',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`}
+        </Script>
+
         <Header />
         <main>{children}</main>
         <Footer />
