@@ -31,7 +31,7 @@ export default function Header() {
             About
           </Link>
           <a
-            href="https://browserprobe.app/support"
+            href="https://omg10.com/4/11134989"
             className={styles.supportBtn}
             target="_blank"
             rel="noopener noreferrer"
