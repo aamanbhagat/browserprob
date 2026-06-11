@@ -1,0 +1,95 @@
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px var(--space-md);
+  border-bottom: 1px solid var(--border-subtle);
+  transition: background var(--transition-fast);
+  gap: var(--space-md);
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.row:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  flex-shrink: 0;
+  min-width: 140px;
+}
+
+.valueWrap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-width: 0;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.value {
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  text-align: right;
+  word-break: break-all;
+}
+
+.mono {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.82rem;
+}
+
+.unavailable {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.copyBtn {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  transition: all var(--transition-fast);
+  opacity: 0;
+}
+
+.row:hover .copyBtn {
+  opacity: 1;
+}
+
+.copyBtn:hover {
+  color: var(--accent-cyan);
+  background: rgba(0, 212, 255, 0.1);
+}
+
+@media (max-width: 640px) {
+  .row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-xs);
+  }
+
+  .valueWrap {
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  .value {
+    text-align: left;
+  }
+
+  .copyBtn {
+    opacity: 1;
+  }
+}

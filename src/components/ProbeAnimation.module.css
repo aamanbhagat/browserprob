@@ -1,0 +1,93 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3xl) 0;
+  gap: var(--space-xl);
+}
+
+.radar {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+
+.sweep {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(0, 212, 255, 0.15) 60deg,
+    transparent 120deg
+  );
+  animation: radarSweep 2s linear infinite;
+}
+
+.ring1,
+.ring2,
+.ring3 {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 212, 255, 0.15);
+}
+
+.ring1 {
+  inset: 0;
+  animation: ripple 2s ease-out infinite;
+}
+
+.ring2 {
+  inset: 20px;
+  animation: ripple 2s ease-out infinite 0.4s;
+}
+
+.ring3 {
+  inset: 40px;
+  animation: ripple 2s ease-out infinite 0.8s;
+}
+
+.dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  border-radius: 50%;
+  background: var(--accent-cyan);
+  box-shadow: 0 0 12px var(--accent-cyan);
+}
+
+.text {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.dots {
+  animation: pulse 1.5s ease infinite;
+}
+
+@keyframes radarSweep {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0.8);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}

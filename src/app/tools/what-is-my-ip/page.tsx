@@ -1,0 +1,93 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import DataRow from "@/components/DataRow";
+import ProbeAnimation from "@/components/ProbeAnimation";
+import RelatedTools from "@/components/RelatedTools";
+import { detectIP, type IPInfo } from "@/lib/detect/ip";
+import styles from "../tools.module.css";
+
+export default function WhatIsMyIPPage() {
+  const [ipInfo, setIpInfo] = useState<IPInfo | null>(null);
+
+  useEffect(() => {
+    detectIP().then(setIpInfo);
+  }, []);
+
+  if (!ipInfo) return <div className={styles.toolPage}><div className="container"><ProbeAnimation /></div></div>;
+
+  const schema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "@id": "https://browserprobe.app/tools/what-is-my-ip#webapp",
+        "name": "What Is My IP Address?",
+        "url": "https://browserprobe.app/tools/what-is-my-ip",
+        "description": "Discover your public IP address and connection details instantly.",
+        "applicationCategory": "UtilityApplication",
+        "operatingSystem": "Any"
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://browserprobe.app/tools/what-is-my-ip#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is the difference between IPv4 and IPv6?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "IPv4 addresses are 32-bit numeric values (e.g., 192.168.1.1), while IPv6 addresses are 128-bit hexadecimal values (e.g., 2001:db8::1) designed to accommodate the vastly growing number of internet devices."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can a website see my actual IP address if I use a VPN?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "If your VPN is working correctly, websites should only see the VPN server's public IP address. However, if your browser has WebRTC leaks enabled, it might still expose your real local or public IP address."
+            }
+          }
+        ]
+      }
+    ]
+  };
+
+  return (
+    <div className={styles.toolPage}>
+      <div className="container">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
+        <div className={styles.header}>
+          <span className={styles.icon}>📡</span>
+          <h1 className={styles.title}>What Is My IP Address?</h1>
+          <p className={styles.subtitle}>Your public IP address as seen by websites you visit.</p>
+        </div>
+        <div className={styles.resultsCard}>
+          <div className={styles.resultsHeader}>
+            <span className={styles.resultsTitle}>Your IP Info</span>
+            <span className={styles.statusDot} />
+          </div>
+          <DataRow label="Primary IP" value={ipInfo.ip} />
+          <DataRow label="Public IPv4" value={ipInfo.ipv4} />
+          <DataRow label="Public IPv6" value={ipInfo.ipv6} />
+        </div>
+        <div className={styles.explainer}>
+          <h2 className={styles.explainerTitle}>What This Means</h2>
+          <p className={styles.explainerText}>
+            Your <strong>IP address</strong> is a unique identifier assigned to your device by your Internet Service Provider (ISP). Every website you visit can see this address — it&apos;s how they know where to send the web page back to.
+          </p>
+          <p className={styles.explainerText}>
+            <strong>IPv4</strong> addresses look like <code>192.168.1.1</code> and are the most common format. <strong>IPv6</strong> addresses are longer (like <code>2001:db8::1</code>) and were created because the world is running out of IPv4 addresses.
+          </p>
+          <p className={styles.explainerText}>
+            If you&apos;re using a <strong>VPN</strong>, you should see the VPN server&apos;s IP address instead of your real one. If you see your actual IP, your VPN may not be working correctly.
+          </p>
+        </div>
+        <RelatedTools currentSlug="what-is-my-ip" />
+      </div>
+    </div>
+  );
+}
