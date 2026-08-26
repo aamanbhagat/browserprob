@@ -31,6 +31,7 @@
 .categorySection > h3 { margin-bottom: 13px; font-family: var(--font-mono), monospace; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; }
 
 .howSection { padding: 82px 0; background: var(--text-primary); color: white; }
+.howSection .eyebrow { color: var(--accent-blue-on-dark); }
 .howGrid { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 90px; }
 .howGrid h2 { color: white; }
 .howGrid > div > p { max-width: 520px; margin-top: 18px; color: #c0ccda; }
