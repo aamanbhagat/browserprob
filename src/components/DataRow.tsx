@@ -7,9 +7,10 @@ interface DataRowProps {
   label: string;
   value: string | number | boolean | null | undefined;
   mono?: boolean;
+  compact?: boolean;
 }
 
-export default function DataRow({ label, value, mono = true }: DataRowProps) {
+export default function DataRow({ label, value, mono = true, compact = false }: DataRowProps) {
   const [copied, setCopied] = useState(false);
 
   const displayValue =
@@ -35,7 +36,7 @@ export default function DataRow({ label, value, mono = true }: DataRowProps) {
   };
 
   return (
-    <div className={styles.row}>
+    <div className={`${styles.row} ${compact ? styles.compact : ""}`}>
       <span className={styles.label}>{label}</span>
       <div className={styles.valueWrap}>
         <span

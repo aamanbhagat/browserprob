@@ -83,6 +83,16 @@ body {
 
 main { min-height: 65vh; }
 
+/* The homepage is a self-contained diagnostics workspace with its own navigation. */
+body:has([data-home-dashboard]) > header,
+body:has([data-home-dashboard]) > footer {
+  display: none;
+}
+
+body:has([data-home-dashboard]) > main {
+  min-height: 100vh;
+}
+
 a { color: var(--accent-blue); text-decoration: none; transition: color var(--transition-fast); }
 a:hover { color: var(--accent-blue-dark); }
 img { max-width: 100%; height: auto; }
