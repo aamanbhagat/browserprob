@@ -3,11 +3,11 @@ import type { NextConfig } from "next";
 const isDevelopment = process.env.NODE_ENV !== "production";
 const contentSecurityPolicy = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline' https://quge5.com https://3nbf4.com${isDevelopment ? " 'unsafe-eval'" : ""}`,
+  `script-src 'self' 'unsafe-inline' https://quge5.com https://auqot.com https://b3mny.com https://ekhay.com https://3nbf4.com${isDevelopment ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "font-src 'self'",
-  `connect-src 'self' https://quge5.com https://3nbf4.com stun:${isDevelopment ? " ws: wss:" : ""}`,
+  `connect-src 'self' https://quge5.com https://6opo.com https://e2ertt.com https://auqot.com https://094kk.com https://jmosl.com https://my.rtmark.net https://3nbf4.com stun:${isDevelopment ? " ws: wss:" : ""}`,
   "media-src 'self' blob:",
   "worker-src 'self' blob:",
   "object-src 'none'",

@@ -20,46 +20,59 @@ export function detectFonts(): FontInfo {
   const testStr = "mmmmmmmmmmlli";
   const testSize = "72px";
 
-  const span = document.createElement("span");
-  span.style.position = "absolute";
-  span.style.left = "-9999px";
-  span.style.fontSize = testSize;
-  span.style.lineHeight = "normal";
-  span.textContent = testStr;
-  document.body.appendChild(span);
+  const createProbe = (fontFamily: string): HTMLSpanElement => {
+    const probe = document.createElement("span");
+    probe.style.position = "absolute";
+    probe.style.left = "-9999px";
+    probe.style.fontFamily = fontFamily;
+    probe.style.fontSize = testSize;
+    probe.style.lineHeight = "normal";
+    probe.style.whiteSpace = "nowrap";
+    probe.textContent = testStr;
+    return probe;
+  };
+
+  const fragment = document.createDocumentFragment();
+  const baseProbes = new Map<string, HTMLSpanElement>();
+  const fontProbes = new Map<string, HTMLSpanElement[]>();
+
+  for (const base of baseFonts) {
+    const probe = createProbe(base);
+    baseProbes.set(base, probe);
+    fragment.appendChild(probe);
+  }
+
+  for (const font of TEST_FONTS) {
+    const probes = baseFonts.map((base) => createProbe(`"${font}", ${base}`));
+    fontProbes.set(font, probes);
+    fragment.append(...probes);
+  }
+
+  document.body.appendChild(fragment);
 
   try {
-    const baseWidths: Record<string, number> = {};
-    const baseHeights: Record<string, number> = {};
+    const baseMetrics = new Map(
+      baseFonts.map((base) => {
+        const probe = baseProbes.get(base)!;
+        return [base, { width: probe.offsetWidth, height: probe.offsetHeight }] as const;
+      }),
+    );
 
-    for (const base of baseFonts) {
-      span.style.fontFamily = base;
-      baseWidths[base] = span.offsetWidth;
-      baseHeights[base] = span.offsetHeight;
-    }
-
-    const detected: string[] = [];
-
-    for (const font of TEST_FONTS) {
-      let found = false;
-      for (const base of baseFonts) {
-        span.style.fontFamily = `"${font}", ${base}`;
-        if (
-          span.offsetWidth !== baseWidths[base] ||
-          span.offsetHeight !== baseHeights[base]
-        ) {
-          found = true;
-          break;
-        }
-      }
-      if (found) detected.push(font);
-    }
+    const detected = TEST_FONTS.filter((font) =>
+      fontProbes.get(font)!.some((probe, index) => {
+        const baseline = baseMetrics.get(baseFonts[index])!;
+        return probe.offsetWidth !== baseline.width || probe.offsetHeight !== baseline.height;
+      }),
+    );
 
     return {
       detectedFonts: detected,
       totalTested: TEST_FONTS.length,
     };
   } finally {
-    span.remove();
+    for (const probe of baseProbes.values()) probe.remove();
+    for (const probes of fontProbes.values()) {
+      for (const probe of probes) probe.remove();
+    }
   }
 }

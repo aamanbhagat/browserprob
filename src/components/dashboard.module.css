@@ -118,6 +118,7 @@
   align-items: start;
   gap: 30px;
   margin-bottom: 27px;
+  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 .pageIntro h1 {
@@ -348,7 +349,12 @@
 .findingIcon { width: 17px; height: 17px; display: grid; place-items: center; color: #244d91; }
 .findingIcon svg { width: 100%; height: 100%; }
 .findingRow > strong { min-width: 0; font-size: 0.58rem; line-height: 1.25; }
-.findingRow > strong a { color: #0a2455; }
+.findingRow > strong a {
+  min-height: 24px;
+  display: inline-flex;
+  align-items: center;
+  color: #0a2455;
+}
 .findingRow > strong a:hover { color: #075cff; }
 .findingRow > p { min-width: 0; overflow: hidden; color: #425d86; font-size: 0.56rem; line-height: 1.25; text-overflow: ellipsis; white-space: nowrap; }
 .evidence { overflow: hidden; color: #294874; font-family: var(--font-mono), monospace; font-size: 0.52rem; text-overflow: ellipsis; white-space: nowrap; }
@@ -619,6 +625,7 @@
   .brand { font-size: 1rem; }
   .appNavigation a { font-size: 0.68rem; }
   .pageIntro h1 { font-size: 1.75rem; }
+  .pageIntro > div > p { display: none; }
   .introMeta { grid-template-columns: 1fr; }
   .reportIdentity p { font-size: 0.68rem; }
   .reportIdentity span:not(.passportMark) { font-size: 0.5rem; }
