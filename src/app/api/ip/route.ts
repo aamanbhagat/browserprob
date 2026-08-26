@@ -1,32 +1,39 @@
 import { NextRequest, NextResponse } from "next/server";
+import { classifyIpAddress, getIpVersion, normalizeIpAddress } from "@/lib/ip";
+
+function firstValidAddress(value: string | null): string {
+  if (!value) return "";
+  for (const candidate of value.split(",")) {
+    const address = normalizeIpAddress(candidate);
+    if (getIpVersion(address)) return address;
+  }
+  return "";
+}
 
 export async function GET(request: NextRequest) {
-  const forwarded = request.headers.get("x-forwarded-for");
-  const realIp = request.headers.get("x-real-ip");
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let ip = forwarded?.split(",")[0]?.trim() || realIp || (request as any).ip || "::1";
+  const platformAddress = firstValidAddress(request.headers.get("x-vercel-forwarded-for"));
+  const forwardedAddress = firstValidAddress(request.headers.get("x-forwarded-for"));
+  const realAddress = firstValidAddress(request.headers.get("x-real-ip"));
+  let ip = platformAddress || forwardedAddress || realAddress || "::1";
 
   let ipv4 = "Not detected";
   let ipv6 = "Not detected";
 
-  const isLocal =
-    ip === "::1" ||
-    ip === "127.0.0.1" ||
-    ip.startsWith("192.168.") ||
-    ip.startsWith("10.") ||
-    ip.startsWith("172.16.") ||
-    process.env.NODE_ENV === "development";
+  const scope = classifyIpAddress(ip);
+  const isLocal = scope !== "public" || process.env.NODE_ENV === "development";
 
   if (isLocal) {
     // In local development, client is loopback. We fetch public IP APIs from the server
     // (which operates from the same machine/router but bypasses client browser adblockers).
     try {
       const res = await fetch("https://api4.ipify.org?format=json", {
+        cache: "no-store",
         signal: AbortSignal.timeout(2000),
       });
       const data = await res.json();
-      if (data.ip) {
-        ipv4 = data.ip;
+      const address = normalizeIpAddress(data.ip);
+      if (getIpVersion(address) === 4) {
+        ipv4 = address;
       }
     } catch {
       // ignore
@@ -34,11 +41,13 @@ export async function GET(request: NextRequest) {
 
     try {
       const res = await fetch("https://api6.ipify.org?format=json", {
+        cache: "no-store",
         signal: AbortSignal.timeout(2000),
       });
       const data = await res.json();
-      if (data.ip) {
-        ipv6 = data.ip;
+      const address = normalizeIpAddress(data.ip);
+      if (getIpVersion(address) === 6) {
+        ipv6 = address;
       }
     } catch {
       // ignore
@@ -51,12 +60,20 @@ export async function GET(request: NextRequest) {
     }
   } else {
     // In production, the client's public IP is retrieved via headers
-    if (ip.includes(":")) {
+    if (getIpVersion(ip) === 6) {
       ipv6 = ip;
     } else {
       ipv4 = ip;
     }
   }
 
-  return NextResponse.json({ ip, ipv4, ipv6 });
+  return NextResponse.json(
+    { ip, ipv4, ipv6, source: "server" },
+    {
+      headers: {
+        "Cache-Control": "private, no-store, max-age=0",
+        "Content-Security-Policy": "default-src 'none'; frame-ancestors 'none'",
+      },
+    },
+  );
 }

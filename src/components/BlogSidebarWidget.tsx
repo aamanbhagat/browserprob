@@ -20,6 +20,8 @@ interface DiagnosticFields {
   supported?: boolean;
   leakedCount?: number;
   ips?: string[];
+  rtcStatus?: string;
+  rtcSummary?: string;
   hash?: string;
   dataUrl?: string;
   dnt?: string;
@@ -50,8 +52,10 @@ export default function BlogSidebarWidget({ slug }: BlogSidebarWidgetProps) {
           const rtc = await detectWebRTCLeak();
           setData({
             supported: rtc.supported,
-            leakedCount: rtc.localIPs.length,
-            ips: rtc.localIPs,
+            leakedCount: rtc.publicIPs.length + rtc.privateIPs.length,
+            ips: [...rtc.publicIPs, ...rtc.privateIPs],
+            rtcStatus: rtc.status,
+            rtcSummary: rtc.summary,
           });
         } else if (slug === "canvas-fingerprinting-explained") {
           const c = detectCanvas();
@@ -74,15 +78,14 @@ export default function BlogSidebarWidget({ slug }: BlogSidebarWidgetProps) {
             gpu: h.gpu,
           });
         }
-      } catch (e) {
-        console.error("Sidebar diagnostics failed", e);
+      } catch {
+        setData(null);
       } finally {
         setLoading(false);
       }
     };
 
-    const timer = setTimeout(runDiagnostics, 800);
-    return () => clearTimeout(timer);
+    runDiagnostics();
   }, [slug]);
 
   if (loading) {
@@ -132,20 +135,21 @@ export default function BlogSidebarWidget({ slug }: BlogSidebarWidgetProps) {
 
       {slug === "webrtc-leak-prevention" && (
         <div className={styles.widgetContent}>
-          <p className={styles.widgetIntro}>WebRTC IP Leak Status:</p>
+          <p className={styles.widgetIntro}>WebRTC address check:</p>
           <div className={styles.dataRow}>
             <span className={styles.label}>Supported</span>
             <span className={styles.value}>{data.supported ? "Yes" : "No"}</span>
           </div>
           <div className={styles.dataRow}>
             <span className={styles.label}>Status</span>
-            <span className={`${styles.value} ${(data.leakedCount ?? 0) > 0 ? styles.alert : styles.success}`}>
-              {(data.leakedCount ?? 0) > 0 ? "⚠️ Leak Detected" : "✅ Protected"}
+            <span className={`${styles.value} ${data.rtcStatus === "local-address-visible" ? styles.alert : styles.success}`}>
+              {data.rtcStatus === "local-address-visible" ? "Review" : data.rtcStatus === "public-address-visible" ? "Compare IPs" : "No numeric local IP"}
             </span>
           </div>
+          <p className={styles.widgetIntro}>{data.rtcSummary}</p>
           {(data.leakedCount ?? 0) > 0 && (
             <div className={styles.leaksList}>
-              <p className={styles.leaksTitle}>Exposed IPs:</p>
+              <p className={styles.leaksTitle}>Observed addresses:</p>
               {(data.ips ?? []).map((ip: string) => (
                 <div key={ip} className={styles.leakIp}>{ip}</div>
               ))}

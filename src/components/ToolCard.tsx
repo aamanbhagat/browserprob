@@ -7,12 +7,22 @@ interface ToolCardProps {
 }
 
 export default function ToolCard({ tool }: ToolCardProps) {
+  const code = tool.shortName
+    .split(/\s+/)
+    .map((word) => word[0])
+    .join("")
+    .slice(0, 3)
+    .toUpperCase();
+
   return (
     <Link href={`/tools/${tool.slug}`} className={styles.card}>
-      <span className={styles.icon}>{tool.icon}</span>
-      <h3 className={styles.name}>{tool.shortName}</h3>
+      <div className={styles.topline}>
+        <span className={styles.icon} aria-hidden="true">{code}</span>
+        <span className={styles.arrow}>↗</span>
+      </div>
+      <h3 className={styles.name}>{tool.name}</h3>
       <p className={styles.desc}>{tool.description}</p>
-      <span className={styles.arrow}>→</span>
+      <span className={styles.openLabel}>Open test</span>
     </Link>
   );
 }

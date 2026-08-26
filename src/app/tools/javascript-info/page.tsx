@@ -1,14 +1,14 @@
 "use client";
 import { useState, useEffect } from "react";
 import DataRow from "@/components/DataRow";
-import ProbeAnimation from "@/components/ProbeAnimation";
+import ToolLoading from "@/components/ToolLoading";
 import RelatedTools from "@/components/RelatedTools";
 import styles from "../tools.module.css";
 
 export default function JavaScriptInfoPage() {
   const [data, setData] = useState<Record<string, string | boolean> | null>(null);
   useEffect(() => {
-    const t = setTimeout(() => {
+    const frame = requestAnimationFrame(() => {
       setData({
         enabled: true,
         es6Modules: typeof Symbol !== "undefined",
@@ -26,10 +26,10 @@ export default function JavaScriptInfoPage() {
         bigInt: typeof BigInt !== "undefined",
         optionalChaining: true,
       });
-    }, 600);
-    return () => clearTimeout(t);
+    });
+    return () => cancelAnimationFrame(frame);
   }, []);
-  if (!data) return <div className={styles.toolPage}><div className="container"><ProbeAnimation /></div></div>;
+  if (!data) return <ToolLoading title="JavaScript Detection" />;
   const schema = {
     "@context": "https://schema.org",
     "@graph": [
@@ -72,7 +72,7 @@ export default function JavaScriptInfoPage() {
       <div className="container">
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }}
         />
       <div className={styles.header}>
         <span className={styles.icon}>⚡</span>

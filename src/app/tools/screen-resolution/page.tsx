@@ -2,14 +2,14 @@
 import { useState, useEffect } from "react";
 import { detectScreen, type ScreenInfo } from "@/lib/detect/screen";
 import DataRow from "@/components/DataRow";
-import ProbeAnimation from "@/components/ProbeAnimation";
+import ToolLoading from "@/components/ToolLoading";
 import RelatedTools from "@/components/RelatedTools";
 import styles from "../tools.module.css";
 
 export default function ScreenResolutionPage() {
   const [info, setInfo] = useState<ScreenInfo | null>(null);
-  useEffect(() => { const t = setTimeout(() => setInfo(detectScreen()), 600); return () => clearTimeout(t); }, []);
-  if (!info) return <div className={styles.toolPage}><div className="container"><ProbeAnimation /></div></div>;
+  useEffect(() => { const frame = requestAnimationFrame(() => setInfo(detectScreen())); return () => cancelAnimationFrame(frame); }, []);
+  if (!info) return <ToolLoading title="Screen Resolution Test" />;
   const schema = {
     "@context": "https://schema.org",
     "@graph": [
@@ -52,7 +52,7 @@ export default function ScreenResolutionPage() {
       <div className="container">
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }}
         />
       <div className={styles.header}>
         <span className={styles.icon}>🖥️</span>

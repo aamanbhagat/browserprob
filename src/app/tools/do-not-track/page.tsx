@@ -2,14 +2,14 @@
 import { useState, useEffect } from "react";
 import { detectPrivacy, type PrivacyInfo } from "@/lib/detect/privacy";
 import DataRow from "@/components/DataRow";
-import ProbeAnimation from "@/components/ProbeAnimation";
+import ToolLoading from "@/components/ToolLoading";
 import RelatedTools from "@/components/RelatedTools";
 import styles from "../tools.module.css";
 
 export default function DoNotTrackPage() {
   const [data, setData] = useState<PrivacyInfo | null>(null);
-  useEffect(() => { const t = setTimeout(() => setData(detectPrivacy()), 600); return () => clearTimeout(t); }, []);
-  if (!data) return <div className={styles.toolPage}><div className="container"><ProbeAnimation /></div></div>;
+  useEffect(() => { const frame = requestAnimationFrame(() => setData(detectPrivacy())); return () => cancelAnimationFrame(frame); }, []);
+  if (!data) return <ToolLoading title="Do Not Track Test" />;
   const schema = {
     "@context": "https://schema.org",
     "@graph": [
@@ -52,7 +52,7 @@ export default function DoNotTrackPage() {
       <div className="container">
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }}
         />
       <div className={styles.header}><span className={styles.icon}>🛡️</span><h1 className={styles.title}>Do Not Track Test</h1><p className={styles.subtitle}>Check if Do Not Track and Global Privacy Control are enabled in your browser.</p></div>
       <div className={styles.resultsCard}>

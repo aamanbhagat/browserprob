@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BrowserProbe
 
-## Getting Started
+BrowserProbe is an evidence-based browser diagnostics site. It creates a local “Diagnostic Passport” that separates browser-reported facts from interpretations and explicitly labels confidence and limitations.
 
-First, run the development server:
+## What it checks
+
+- Browser, engine, platform, language, user agent, and Client Hints
+- Public request IP and WebRTC ICE candidates
+- Screen, viewport, graphics, hardware, storage, and media-device visibility
+- Canvas and Web Audio rendering samples
+- Privacy preference signals including DNT and GPC
+- Support for selected browser APIs
+
+Browser-reported values can be reduced, frozen, randomized, or spoofed. A single scan cannot verify a physical device, prove fingerprint uniqueness, or guarantee anonymity.
+
+## Local development
+
+Requires a current Node.js release compatible with Next.js 16.
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Verification
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run lint
+npm test
+npm run build
+npm audit
+```
 
-## Learn More
+The unit suite covers browser parsing, Client Hint brand filtering, IP normalization and classification, timezone offsets, WebRTC candidate interpretation, sample hashing, and diagnostic findings.
 
-To learn more about Next.js, take a look at the following resources:
+## Privacy and network behavior
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Most checks run in the current tab. The public-IP check calls the first-party `/api/ip` route. The WebRTC check contacts Cloudflare’s public STUN endpoint to gather ICE candidates. BrowserProbe does not require accounts or include application-level report storage. The site loads the supplied `quge5.com` zone `273538` monetization tag and the supplied root worker for `3nbf4.com` zone `11662682`. The in-product privacy policy describes this network behavior and its implications.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Hosting and infrastructure providers may still process ordinary request metadata. See the in-product privacy policy for the complete disclosure.
 
-## Deploy on Vercel
+## Production
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The app uses the Next.js App Router and is suitable for a standard Node or Vercel deployment:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run build
+npm start
+```
+
+Production responses include a Content Security Policy, HSTS, clickjacking protection, a strict referrer policy, and cross-origin isolation headers. Re-run the test suite, dependency audit, and browser checks before each release.

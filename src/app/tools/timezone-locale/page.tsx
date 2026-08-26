@@ -1,36 +1,36 @@
 "use client";
 import { useState, useEffect } from "react";
 import DataRow from "@/components/DataRow";
-import ProbeAnimation from "@/components/ProbeAnimation";
+import ToolLoading from "@/components/ToolLoading";
 import RelatedTools from "@/components/RelatedTools";
+import { detectTimezone, type TimezoneInfo } from "@/lib/detect/timezone";
 import styles from "../tools.module.css";
 
+interface TimezonePageData extends TimezoneInfo {
+  dateFormat: string;
+  timeFormat: string;
+  calendar: string;
+  numberingSystem: string;
+}
+
 export default function TimezoneLocalePage() {
-  const [data, setData] = useState<Record<string, string> | null>(null);
+  const [data, setData] = useState<TimezonePageData | null>(null);
   useEffect(() => {
-    const t = setTimeout(() => {
+    const frame = requestAnimationFrame(() => {
       const tz = Intl.DateTimeFormat().resolvedOptions();
       const now = new Date();
-      const offset = now.getTimezoneOffset();
-      const offsetHours = Math.abs(Math.floor(offset / 60));
-      const offsetMins = Math.abs(offset % 60);
-      const sign = offset <= 0 ? "+" : "-";
+      const detected = detectTimezone(now);
       setData({
-        timezone: tz.timeZone || "Unknown",
-        locale: tz.locale || navigator.language,
-        utcOffset: `UTC${sign}${String(offsetHours).padStart(2, "0")}:${String(offsetMins).padStart(2, "0")}`,
-        language: navigator.language,
-        languages: navigator.languages?.join(", ") || navigator.language,
+        ...detected,
         dateFormat: now.toLocaleDateString(),
         timeFormat: now.toLocaleTimeString(),
         calendar: tz.calendar || "gregory",
         numberingSystem: tz.numberingSystem || "latn",
-        localTime: now.toString(),
       });
-    }, 600);
-    return () => clearTimeout(t);
+    });
+    return () => cancelAnimationFrame(frame);
   }, []);
-  if (!data) return <div className={styles.toolPage}><div className="container"><ProbeAnimation /></div></div>;
+  if (!data) return <ToolLoading title="Timezone & Locale" />;
   const schema = {
     "@context": "https://schema.org",
     "@graph": [
@@ -60,7 +60,7 @@ export default function TimezoneLocalePage() {
             "name": "What is timezone fingerprinting?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Timezone fingerprinting tracks devices by reading their local timezone settings (via JavaScript's Intl API). Since timezones narrow down your geographic region, it is a key component of building a unique browser fingerprint."
+              "text": "A site can read the browser timezone through the Intl API. A timezone may narrow a broad region and contribute to a larger fingerprint, but many people share it and it does not prove location or identity."
             }
           }
         ]
@@ -73,12 +73,13 @@ export default function TimezoneLocalePage() {
       <div className="container">
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }}
         />
       <div className={styles.header}><span className={styles.icon}>🕐</span><h1 className={styles.title}>Timezone & Locale</h1><p className={styles.subtitle}>Detect your timezone, language preferences, and locale settings.</p></div>
       <div className={styles.resultsCard}>
         <div className={styles.resultsHeader}><span className={styles.resultsTitle}>Locale Info</span><span className={styles.statusDot} /></div>
         <DataRow label="Timezone" value={data.timezone} />
+        {data.reportedTimezone !== data.timezone && <DataRow label="Browser Alias" value={data.reportedTimezone} />}
         <DataRow label="UTC Offset" value={data.utcOffset} />
         <DataRow label="Locale" value={data.locale} />
         <DataRow label="Primary Language" value={data.language} />
@@ -91,7 +92,7 @@ export default function TimezoneLocalePage() {
       </div>
       <div className={styles.explainer}>
         <h2 className={styles.explainerTitle}>What This Means</h2>
-        <p className={styles.explainerText}>Your <strong>timezone</strong> reveals your approximate geographic location. Combined with your language preferences, it can narrow down your location to a specific country or region.</p>
+        <p className={styles.explainerText}>Your <strong>timezone</strong> can suggest a broad geographic region, but it does not prove your physical location. Multiple regions can share an offset, and the setting can be changed or spoofed.</p>
         <p className={styles.explainerText}>The <strong>Intl API</strong> provides locale-aware formatting for dates, numbers, and currencies. The specific locale, calendar system, and numbering system your browser uses all contribute to your digital fingerprint.</p>
         <p className={styles.explainerText}>Websites use this information to serve localized content, adjust timestamps, and personalize the experience — but it also makes you more identifiable.</p>
       </div>

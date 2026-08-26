@@ -2,14 +2,14 @@
 import { useState, useEffect } from "react";
 import { detectHardware, type HardwareInfo } from "@/lib/detect/hardware";
 import DataRow from "@/components/DataRow";
-import ProbeAnimation from "@/components/ProbeAnimation";
+import ToolLoading from "@/components/ToolLoading";
 import RelatedTools from "@/components/RelatedTools";
 import styles from "../tools.module.css";
 
 export default function HardwareInfoPage() {
   const [data, setData] = useState<HardwareInfo | null>(null);
   useEffect(() => { detectHardware().then(setData); }, []);
-  if (!data) return <div className={styles.toolPage}><div className="container"><ProbeAnimation /></div></div>;
+  if (!data) return <ToolLoading title="Hardware Information" />;
   const schema = {
     "@context": "https://schema.org",
     "@graph": [
@@ -52,7 +52,7 @@ export default function HardwareInfoPage() {
       <div className="container">
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }}
         />
       <div className={styles.header}><span className={styles.icon}>🖲️</span><h1 className={styles.title}>Hardware Information</h1><p className={styles.subtitle}>Detect your CPU cores, device memory, battery status, and GPU details.</p></div>
       <div className={styles.resultsCard}>

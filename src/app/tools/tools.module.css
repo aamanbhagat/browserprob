@@ -1,48 +1,50 @@
 .toolPage {
-  padding: var(--space-2xl) 0;
+  padding: 52px 0 80px;
   min-height: 60vh;
 }
 
-.toolPage .container {
-  max-width: 800px;
+.toolPage :global(.container) {
+  max-width: 980px;
 }
 
 .header {
-  text-align: center;
-  margin-bottom: var(--space-2xl);
+  max-width: 760px;
+  margin-bottom: 32px;
+  text-align: left;
 }
 
 .icon {
-  font-size: 2.5rem;
-  margin-bottom: var(--space-md);
-  display: block;
+  display: none;
 }
 
 .title {
-  font-size: 2rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  margin-bottom: var(--space-sm);
+  margin-bottom: 10px;
+  color: var(--text-primary);
+  font-size: clamp(2.3rem, 5vw, 4.3rem);
+  font-weight: 800;
+  letter-spacing: -0.055em;
+  line-height: 1;
 }
 
 .subtitle {
   color: var(--text-secondary);
   font-size: 1rem;
   max-width: 560px;
-  margin: 0 auto;
+  margin: 0;
   line-height: 1.6;
 }
 
 .resultsCard {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
   margin-bottom: var(--space-2xl);
 }
 
 .resultsHeader {
-  padding: var(--space-md) var(--space-lg);
+  padding: 13px 16px;
   border-bottom: 1px solid var(--border-subtle);
   display: flex;
   align-items: center;
@@ -54,7 +56,8 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--text-secondary);
+  color: var(--text-primary);
+  font-family: var(--font-mono), monospace;
 }
 
 .statusDot {
@@ -62,11 +65,15 @@
   height: 8px;
   border-radius: 50%;
   background: var(--accent-emerald);
-  box-shadow: 0 0 8px var(--accent-emerald);
+  box-shadow: none;
 }
 
 .explainer {
   margin-top: var(--space-2xl);
+  padding: 28px;
+  background: var(--paper);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
 }
 
 .explainerTitle {
@@ -90,7 +97,7 @@
 .visualBox {
   margin: var(--space-lg) 0;
   padding: var(--space-md);
-  background: var(--bg-secondary);
+  background: var(--paper);
   border-radius: var(--radius-md);
   border: 1px solid var(--border-subtle);
   display: flex;
@@ -102,7 +109,7 @@
 .hashDisplay {
   font-family: var(--font-mono), monospace;
   font-size: 0.85rem;
-  color: var(--accent-cyan);
+  color: var(--accent-blue);
   word-break: break-all;
   text-align: center;
   padding: var(--space-md);

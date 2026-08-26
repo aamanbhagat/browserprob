@@ -8,6 +8,7 @@
 }
 
 .tocTitle {
+  font-family: var(--font-mono), monospace;
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -61,7 +62,7 @@
 .tocItem.active .tocLink {
   color: var(--accent-cyan);
   font-weight: 600;
-  text-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+  text-shadow: none;
 }
 
 /* Hide scrollbar for clean aesthetic */

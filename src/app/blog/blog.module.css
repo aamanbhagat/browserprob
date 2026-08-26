@@ -8,12 +8,13 @@
 }
 
 .header {
-  text-align: center;
-  max-width: 700px;
+  text-align: left;
+  max-width: 760px;
   margin: 0 auto var(--space-2xl) auto;
 }
 
 .eyebrow {
+  font-family: var(--font-mono), monospace;
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -23,14 +24,12 @@
 }
 
 .title {
-  font-size: 2.8rem;
+  font-size: clamp(2.4rem, 6vw, 4.4rem);
   font-weight: 800;
   letter-spacing: -0.02em;
   margin-bottom: var(--space-sm);
-  background: var(--accent-gradient-text);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--text-primary);
+  line-height: 1.02;
 }
 
 .subtitle {
@@ -42,7 +41,7 @@
 /* Category Filters */
 .filterBar {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   flex-wrap: wrap;
   gap: var(--space-sm);
   margin-bottom: var(--space-2xl);
@@ -70,10 +69,10 @@
 }
 
 .activePill {
-  color: var(--accent-cyan);
-  background: rgba(0, 212, 255, 0.08);
-  border-color: rgba(0, 212, 255, 0.3);
-  box-shadow: var(--shadow-glow-cyan);
+  color: white;
+  background: var(--accent-blue);
+  border-color: var(--accent-blue);
+  box-shadow: none;
 }
 
 .pillCount {
@@ -86,8 +85,8 @@
 }
 
 .activePill .pillCount {
-  background: rgba(0, 212, 255, 0.12);
-  color: var(--accent-cyan);
+  background: rgba(255, 255, 255, 0.18);
+  color: white;
 }
 
 /* Cards Grid */
@@ -95,8 +94,8 @@
   display: grid;
   grid-template-columns: repeat(1, 1fr);
   gap: var(--space-lg);
-  max-width: 900px;
-  margin: 0 auto;
+  max-width: 1080px;
+  margin: 0;
 }
 
 @media (min-width: 768px) {
@@ -111,12 +110,13 @@
   border-radius: var(--radius-md);
   transition: all var(--transition-base);
   height: 100%;
+  box-shadow: var(--shadow-sm);
 }
 
 .card:hover {
-  background: var(--bg-card-hover);
+  background: var(--bg-card);
   border-color: var(--border-accent);
-  box-shadow: var(--shadow-glow-cyan);
+  box-shadow: var(--shadow-md);
   transform: translateY(-3px);
 }
 
@@ -136,6 +136,7 @@
   font-size: 0.8rem;
   color: var(--text-muted);
   margin-bottom: var(--space-md);
+  font-family: var(--font-mono), monospace;
 }
 
 .categoryBadge {
@@ -181,7 +182,7 @@
 }
 
 .card:hover .cardTitle {
-  color: #fff;
+  color: var(--accent-blue);
 }
 
 .excerpt {
@@ -284,11 +285,11 @@
 }
 
 .postTitle {
-  font-size: 2.8rem;
+  font-size: clamp(2.1rem, 5vw, 4rem);
   font-weight: 800;
   line-height: 1.25;
   letter-spacing: -0.02em;
-  color: #fff;
+  color: var(--text-primary);
 }
 
 /* Layout Grid */
@@ -340,6 +341,11 @@
   font-size: 1.05rem;
   line-height: 1.8;
   max-width: 680px;
+  background: var(--paper);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: clamp(22px, 4vw, 48px);
+  box-shadow: var(--shadow-sm);
 }
 
 .postContent h2 {
@@ -369,7 +375,7 @@
 }
 
 .inlineCode {
-  background: rgba(0, 212, 255, 0.05);
+  background: var(--accent-soft);
   color: var(--accent-cyan);
   padding: 2px 6px;
   border-radius: 4px;
@@ -386,13 +392,13 @@
 }
 
 .inlineLink:hover {
-  color: #fff;
-  border-bottom-color: #fff;
+  color: var(--accent-blue-dark);
+  border-bottom-color: var(--accent-blue-dark);
 }
 
 .blockquote {
   border-left: 3px solid var(--accent-cyan);
-  background: rgba(18, 18, 26, 0.5);
+  background: var(--accent-soft);
   padding: var(--space-md) var(--space-lg);
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
   margin: var(--space-xl) 0;

@@ -2,14 +2,14 @@
 import { useState, useEffect } from "react";
 import { detectWebGL, type WebGLInfo } from "@/lib/detect/webgl";
 import DataRow from "@/components/DataRow";
-import ProbeAnimation from "@/components/ProbeAnimation";
+import ToolLoading from "@/components/ToolLoading";
 import RelatedTools from "@/components/RelatedTools";
 import styles from "../tools.module.css";
 
 export default function WebGLInfoPage() {
   const [data, setData] = useState<WebGLInfo | null>(null);
-  useEffect(() => { const t = setTimeout(() => setData(detectWebGL()), 600); return () => clearTimeout(t); }, []);
-  if (!data) return <div className={styles.toolPage}><div className="container"><ProbeAnimation /></div></div>;
+  useEffect(() => { const frame = requestAnimationFrame(() => setData(detectWebGL())); return () => cancelAnimationFrame(frame); }, []);
+  if (!data) return <ToolLoading title="WebGL Information" />;
   const schema = {
     "@context": "https://schema.org",
     "@graph": [
@@ -39,7 +39,7 @@ export default function WebGLInfoPage() {
             "name": "How does WebGL contribute to device tracking?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "WebGL exposes the model of your GPU (graphics card), GPU driver vendor, and list of supported extensions. This hardware combination is highly unique and is frequently used for WebGL fingerprinting to track devices across different websites."
+              "text": "WebGL can expose a renderer string, vendor string, limits, and supported extensions. Those details may contribute to a broader browser fingerprint, but they do not prove identity or uniqueness on their own."
             }
           }
         ]
@@ -52,7 +52,7 @@ export default function WebGLInfoPage() {
       <div className="container">
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }}
         />
       <div className={styles.header}><span className={styles.icon}>🎮</span><h1 className={styles.title}>WebGL Information</h1><p className={styles.subtitle}>View your WebGL capabilities, GPU renderer, vendor, and extensions.</p></div>
       <div className={styles.resultsCard}>
@@ -78,7 +78,7 @@ export default function WebGLInfoPage() {
       <div className={styles.explainer}>
         <h2 className={styles.explainerTitle}>What This Means</h2>
         <p className={styles.explainerText}><strong>WebGL</strong> (Web Graphics Library) enables hardware-accelerated 3D graphics directly in your browser. It powers browser games, data visualizations, and interactive 3D experiences.</p>
-        <p className={styles.explainerText}>Your <strong>GPU renderer</strong> and <strong>vendor</strong> reveal your exact graphics hardware. This is commonly used for fingerprinting because the combination of GPU model, driver version, and supported extensions is highly unique.</p>
+        <p className={styles.explainerText}>The <strong>GPU renderer</strong> and <strong>vendor</strong> strings may be exact, generalized, or software-rendered depending on browser and privacy protections. Together with limits and extensions, they can contribute to fingerprinting.</p>
         <p className={styles.explainerText}><strong>WebGL 2.0</strong> offers significant improvements over 1.0, including 3D textures, occlusion queries, and transform feedback — features essential for advanced graphics applications.</p>
       </div>
       <RelatedTools currentSlug="webgl-info" />

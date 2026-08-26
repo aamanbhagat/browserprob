@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { detectBrowser, type BrowserInfo } from "@/lib/detect/browser";
 import DataRow from "@/components/DataRow";
-import ProbeAnimation from "@/components/ProbeAnimation";
+import ToolLoading from "@/components/ToolLoading";
 import RelatedTools from "@/components/RelatedTools";
 import styles from "../tools.module.css";
 
@@ -11,11 +11,11 @@ export default function WhatIsMyBrowserPage() {
   const [info, setInfo] = useState<BrowserInfo | null>(null);
 
   useEffect(() => {
-    const timer = setTimeout(() => setInfo(detectBrowser()), 800);
-    return () => clearTimeout(timer);
+    const frame = requestAnimationFrame(() => setInfo(detectBrowser()));
+    return () => cancelAnimationFrame(frame);
   }, []);
 
-  if (!info) return <div className={styles.toolPage}><div className="container"><ProbeAnimation /></div></div>;
+  if (!info) return <ToolLoading title="What Is My Browser?" />;
 
   const schema = {
     "@context": "https://schema.org",
@@ -46,7 +46,7 @@ export default function WhatIsMyBrowserPage() {
             "name": "What is a User Agent string?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "A User Agent string is a header sent by your browser to websites, identifying the browser name, version, operating system, and rendering engine to optimize compatibility."
+              "text": "A User Agent string is sent by a browser to help sites handle compatibility. It may contain browser and platform hints, but modern browsers can reduce or freeze details and it should not be treated as verified device identity."
             }
           }
         ]
@@ -59,7 +59,7 @@ export default function WhatIsMyBrowserPage() {
       <div className="container">
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }}
         />
         <div className={styles.header}>
           <span className={styles.icon}>🌐</span>
@@ -80,6 +80,7 @@ export default function WhatIsMyBrowserPage() {
           <DataRow label="Engine" value={info.engine} />
           <DataRow label="Engine Version" value={info.engineVersion} />
           <DataRow label="Platform" value={info.platform} />
+          <DataRow label="Device Class" value={info.mobile ? "Mobile" : "Desktop / tablet"} mono={false} />
           <DataRow label="Vendor" value={info.vendor} />
           <DataRow label="Language" value={info.language} />
           <DataRow label="Languages" value={info.languages} />
@@ -104,8 +105,7 @@ export default function WhatIsMyBrowserPage() {
             Your <strong>user agent string</strong> is a text identifier your
             browser sends with every web request. It contains your browser name,
             version, operating system, and sometimes device information.
-            Websites use this to optimize their layout and functionality for
-            your specific setup.
+            Websites use this to optimize compatibility. Modern browsers can freeze or reduce version and operating-system details, so these values are browser-reported hints rather than verified hardware facts.
           </p>
         </div>
 

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import DataRow from "@/components/DataRow";
-import ProbeAnimation from "@/components/ProbeAnimation";
+import ToolLoading from "@/components/ToolLoading";
 import RelatedTools from "@/components/RelatedTools";
 import { detectIP, type IPInfo } from "@/lib/detect/ip";
 import styles from "../tools.module.css";
@@ -14,7 +14,7 @@ export default function WhatIsMyIPPage() {
     detectIP().then(setIpInfo);
   }, []);
 
-  if (!ipInfo) return <div className={styles.toolPage}><div className="container"><ProbeAnimation /></div></div>;
+  if (!ipInfo) return <ToolLoading title="What Is My IP Address?" />;
 
   const schema = {
     "@context": "https://schema.org",
@@ -58,7 +58,7 @@ export default function WhatIsMyIPPage() {
       <div className="container">
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }}
         />
         <div className={styles.header}>
           <span className={styles.icon}>📡</span>
@@ -77,13 +77,13 @@ export default function WhatIsMyIPPage() {
         <div className={styles.explainer}>
           <h2 className={styles.explainerTitle}>What This Means</h2>
           <p className={styles.explainerText}>
-            Your <strong>IP address</strong> is a unique identifier assigned to your device by your Internet Service Provider (ISP). Every website you visit can see this address — it&apos;s how they know where to send the web page back to.
+            Your <strong>public IP address</strong> identifies a network route, not necessarily one device or person. It may be shared by a household, workplace, mobile carrier, VPN, or carrier-grade NAT gateway.
           </p>
           <p className={styles.explainerText}>
             <strong>IPv4</strong> addresses look like <code>192.168.1.1</code> and are the most common format. <strong>IPv6</strong> addresses are longer (like <code>2001:db8::1</code>) and were created because the world is running out of IPv4 addresses.
           </p>
           <p className={styles.explainerText}>
-            If you&apos;re using a <strong>VPN</strong>, you should see the VPN server&apos;s IP address instead of your real one. If you see your actual IP, your VPN may not be working correctly.
+            If you&apos;re using a <strong>VPN</strong>, compare this result with the exit address shown by your VPN provider. BrowserProbe cannot independently know which address you expected, so it does not automatically declare a VPN failure.
           </p>
         </div>
         <RelatedTools currentSlug="what-is-my-ip" />

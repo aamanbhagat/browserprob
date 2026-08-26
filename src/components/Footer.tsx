@@ -11,19 +11,16 @@ export default function Footer() {
         <div className={styles.grid}>
           <div className={styles.brand}>
             <Link href="/" className={styles.logo}>
-              <span className={styles.logoIcon}>◎</span>
-              <span>
-                Browser<span className="gradient-text">Probe</span>
-              </span>
+              <span className={styles.logoIcon}>BP</span>
+              <span>BrowserProbe</span>
             </Link>
             <p className={styles.tagline}>
-              Free browser diagnostics and privacy tools. Discover what websites
-              can see about you.
+              Evidence-based browser diagnostics that distinguish observed values, interpretations, and limitations.
             </p>
           </div>
 
           <div className={styles.linkGroup}>
-            <h3 className={styles.groupTitle}>Popular Tools</h3>
+            <h2 className={styles.groupTitle}>Popular Tools</h2>
             <ul className={styles.linkList}>
               {tools.slice(0, 6).map((tool) => (
                 <li key={tool.slug}>
@@ -36,7 +33,7 @@ export default function Footer() {
           </div>
 
           <div className={styles.linkGroup}>
-            <h3 className={styles.groupTitle}>More Tools</h3>
+            <h2 className={styles.groupTitle}>More Tools</h2>
             <ul className={styles.linkList}>
               {tools.slice(6, 12).map((tool) => (
                 <li key={tool.slug}>
@@ -49,7 +46,7 @@ export default function Footer() {
           </div>
 
           <div className={styles.linkGroup}>
-            <h3 className={styles.groupTitle}>Resources</h3>
+            <h2 className={styles.groupTitle}>Resources</h2>
             <ul className={styles.linkList}>
               <li>
                 <Link href="/blog" className={styles.link}>Blog</Link>
@@ -69,7 +66,7 @@ export default function Footer() {
             © {year} BrowserProbe.app — All rights reserved.
           </p>
           <p className={styles.powered}>
-            Built with Next.js
+            Open-source methodology · No app report database
           </p>
         </div>
       </div>

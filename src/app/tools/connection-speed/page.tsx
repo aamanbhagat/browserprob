@@ -2,14 +2,14 @@
 import { useState, useEffect } from "react";
 import { detectNetwork, type NetworkInfo } from "@/lib/detect/network";
 import DataRow from "@/components/DataRow";
-import ProbeAnimation from "@/components/ProbeAnimation";
+import ToolLoading from "@/components/ToolLoading";
 import RelatedTools from "@/components/RelatedTools";
 import styles from "../tools.module.css";
 
 export default function ConnectionSpeedPage() {
   const [data, setData] = useState<NetworkInfo | null>(null);
-  useEffect(() => { const t = setTimeout(() => setData(detectNetwork()), 600); return () => clearTimeout(t); }, []);
-  if (!data) return <div className={styles.toolPage}><div className="container"><ProbeAnimation /></div></div>;
+  useEffect(() => { const frame = requestAnimationFrame(() => setData(detectNetwork())); return () => cancelAnimationFrame(frame); }, []);
+  if (!data) return <ToolLoading title="Connection Information" />;
   const schema = {
     "@context": "https://schema.org",
     "@graph": [
@@ -52,7 +52,7 @@ export default function ConnectionSpeedPage() {
       <div className="container">
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }}
         />
       <div className={styles.header}><span className={styles.icon}>📶</span><h1 className={styles.title}>Connection Information</h1><p className={styles.subtitle}>View your network connection type, speed estimate, and data saver status.</p></div>
       <div className={styles.resultsCard}>

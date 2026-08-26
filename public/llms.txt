@@ -1,0 +1,38 @@
+# BrowserProbe
+
+> BrowserProbe is a free browser-diagnostics website that reports what the current browser exposes through standard web APIs. Results describe the current session and should not be treated as verified physical-device identity, proof of fingerprint uniqueness, or a guarantee of anonymity.
+
+## Main pages
+
+- [Browser diagnostic report](https://browserprobe.app/): Run the complete browser inspection and review its evidence, confidence labels, and limitations.
+- [About the methodology](https://browserprobe.app/about): Learn how BrowserProbe separates observed browser values from interpretations.
+- [Privacy policy](https://browserprobe.app/privacy-policy): Review local processing, network requests, third-party monetization code, and report-storage practices.
+- [Browser privacy guides](https://browserprobe.app/blog): Read explanatory articles about browser fingerprinting and privacy signals.
+
+## Identity and network tools
+
+- [What Is My Browser?](https://browserprobe.app/tools/what-is-my-browser): Browser name, version, engine, platform hints, and user agent.
+- [What Is My IP Address?](https://browserprobe.app/tools/what-is-my-ip): Public request address and IP-family interpretation.
+- [Timezone and Locale](https://browserprobe.app/tools/timezone-locale): Timezone, offset, locale, and browser language preferences.
+- [WebRTC Address Test](https://browserprobe.app/tools/webrtc-leak-test): ICE candidates with public-IP comparison and explicit limitations.
+
+## Privacy and fingerprinting tools
+
+- [Cookies Test](https://browserprobe.app/tools/cookies-test): First-party cookie and web-storage availability.
+- [Canvas Fingerprint Test](https://browserprobe.app/tools/canvas-fingerprint): A repeatable identifier for one canvas rendering sample.
+- [Audio Fingerprint Test](https://browserprobe.app/tools/audio-fingerprint): A repeatable identifier for one Web Audio rendering sample.
+- [Font Detection](https://browserprobe.app/tools/font-detection): Font names distinguishable through text-metric comparisons.
+- [Do Not Track Test](https://browserprobe.app/tools/do-not-track): DNT and Global Privacy Control signals.
+
+## Hardware and feature tools
+
+- [Screen Resolution Test](https://browserprobe.app/tools/screen-resolution): Screen, viewport, color depth, pixel ratio, and touch support.
+- [WebGL Information](https://browserprobe.app/tools/webgl-info): WebGL support, renderer strings, limits, and extensions.
+- [Hardware Information](https://browserprobe.app/tools/hardware-info): Browser-exposed concurrency, memory, GPU, touch, and battery hints.
+- [Media Devices Detection](https://browserprobe.app/tools/media-devices): Permission-limited media-device counts and labels.
+- [JavaScript Detection](https://browserprobe.app/tools/javascript-info): JavaScript runtime and selected platform capabilities.
+- [Browser Features Support](https://browserprobe.app/tools/browser-features): Availability of selected modern web APIs.
+
+## Project
+
+- [Source code](https://github.com/aamanbhagat/browserprob): Inspect the implementation and detection methodology.

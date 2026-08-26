@@ -17,10 +17,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const post = getPostBySlug(slug);
   if (!post) return {};
   return {
-    title: `${post.title} | BrowserProbe Blog`,
+    title: post.title,
     description: post.excerpt,
     alternates: { canonical: `https://browserprobe.app/blog/${post.slug}` },
-    openGraph: { title: post.title, description: post.excerpt, type: "article", publishedTime: post.date },
+    openGraph: { title: post.title, description: post.excerpt, type: "article", publishedTime: post.date, url: `https://browserprobe.app/blog/${post.slug}` },
   };
 }
 
@@ -245,7 +245,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   return (
     <div className={styles.postPage}>
       <div className="container">
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema).replace(/</g, "\\u003c") }} />
         
         <Link href="/blog" className={styles.backLink}>
           ← Back to Blog

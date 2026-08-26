@@ -33,7 +33,8 @@
 .card:hover {
   background: var(--bg-card-hover);
   border-color: var(--border-accent);
-  transform: translateX(4px);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
   color: var(--text-primary);
 }
 
@@ -50,7 +51,7 @@
 
 .arrow {
   font-size: 0.9rem;
-  color: var(--accent-cyan);
+  color: var(--accent-blue);
   opacity: 0;
   transition: opacity var(--transition-fast);
 }

@@ -1,3 +1,5 @@
+import { fingerprintNumbers } from "@/lib/hash";
+
 export interface AudioInfo {
   supported: boolean;
   fingerprint: string;
@@ -54,11 +56,7 @@ export async function detectAudio(): Promise<AudioInfo> {
     if (!rendered) return { ...fail, supported: true, sampleRate, channelCount, state: "timeout" };
 
     const data = rendered.getChannelData(0);
-    let sum = 0;
-    for (let i = 0; i < data.length; i++) {
-      sum += Math.abs(data[i]);
-    }
-    const fingerprint = Math.abs(Math.round(sum * 1000000)).toString(16).padStart(8, "0");
+    const fingerprint = fingerprintNumbers(data);
 
     return { supported: true, fingerprint, sampleRate, channelCount, state: "complete" };
   } catch {

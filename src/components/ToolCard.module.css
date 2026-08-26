@@ -1,82 +1,21 @@
 .card {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
-  padding: var(--space-lg);
-  background: var(--bg-card);
+  min-height: 210px;
+  padding: 19px;
+  background: var(--paper);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  text-decoration: none;
+  box-shadow: var(--shadow-sm);
   color: var(--text-primary);
-  transition: all var(--transition-base);
-  position: relative;
-  overflow: hidden;
-  opacity: 0;
-  animation: fadeInUp 0.5s ease forwards;
+  transition: border-color var(--transition-base), box-shadow var(--transition-base), transform var(--transition-base);
 }
 
-.card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: var(--accent-gradient);
-  opacity: 0;
-  transition: opacity var(--transition-base);
-}
-
-.card:hover {
-  background: var(--bg-card-hover);
-  border-color: var(--border-accent);
-  box-shadow: var(--shadow-glow-cyan);
-  transform: translateY(-4px);
-  color: var(--text-primary);
-}
-
-.card:hover::before {
-  opacity: 1;
-}
-
-.icon {
-  font-size: 1.8rem;
-  line-height: 1;
-}
-
-.name {
-  font-size: 1rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-}
-
-.desc {
-  font-size: 0.82rem;
-  color: var(--text-secondary);
-  line-height: 1.5;
-  flex-grow: 1;
-}
-
-.arrow {
-  font-size: 1rem;
-  color: var(--accent-cyan);
-  opacity: 0;
-  transform: translateX(-8px);
-  transition: all var(--transition-base);
-}
-
-.card:hover .arrow {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+.card:hover { border-color: var(--border-accent); box-shadow: var(--shadow-md); color: var(--text-primary); transform: translateY(-2px); }
+.topline { display: flex; justify-content: space-between; align-items: center; }
+.icon { display: inline-flex; align-items: center; justify-content: center; min-width: 35px; height: 25px; padding: 0 7px; background: var(--accent-soft); border: 1px solid var(--border-accent); border-radius: 3px; color: var(--accent-blue); font-family: var(--font-mono), monospace; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.04em; }
+.arrow { color: var(--text-muted); font-family: var(--font-mono), monospace; font-size: 0.75rem; transition: color var(--transition-fast), transform var(--transition-fast); }
+.card:hover .arrow { color: var(--accent-blue); transform: translate(2px, -2px); }
+.name { margin-top: 22px; color: var(--text-primary); font-size: 1rem; font-weight: 800; letter-spacing: -0.025em; line-height: 1.25; }
+.desc { margin-top: 8px; color: var(--text-secondary); font-size: 0.75rem; line-height: 1.55; }
+.openLabel { margin-top: auto; padding-top: 18px; color: var(--accent-blue); font-size: 0.7rem; font-weight: 800; }

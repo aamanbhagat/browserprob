@@ -7,8 +7,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: "Free browser diagnostics, fingerprint tests, and privacy tools.",
     start_url: "/",
     display: "standalone",
-    background_color: "#0a0a0f",
-    theme_color: "#00d4ff",
+    background_color: "#eef3f8",
+    theme_color: "#2458e8",
     icons: [
       { src: "/favicon.png", sizes: "192x192", type: "image/png" },
       { src: "/favicon.png", sizes: "512x512", type: "image/png" },

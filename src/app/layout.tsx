@@ -1,37 +1,34 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
-import Script from "next/script";
+import { Archivo, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
-const inter = Inter({
+const archivo = Archivo({
   subsets: ["latin"],
   variable: "--font-sans",
   display: "swap",
 });
 
-const jetbrainsMono = JetBrains_Mono({
+const ibmPlexMono = IBM_Plex_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
   display: "swap",
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://browserprobe.app"),
+  applicationName: "BrowserProbe",
   alternates: {
     canonical: "/",
-  },
-  icons: {
-    icon: "/favicon.png",
-    apple: "/favicon.png",
   },
   title: {
     default: "BrowserProbe — Free Browser Diagnostics & Privacy Tools",
     template: "%s | BrowserProbe",
   },
   description:
-    "Probe your browser to discover what websites can see. Free tools for browser detection, fingerprinting tests, privacy leak checks, and hardware diagnostics.",
+    "See what your browser reports to websites. Run clear, evidence-based checks for browser version, IP, WebRTC, fingerprinting, screen, storage, and web features.",
   keywords: [
     "browser probe",
     "what is my browser",
@@ -43,6 +40,8 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "BrowserProbe" }],
   creator: "BrowserProbe",
+  category: "technology",
+  referrer: "strict-origin-when-cross-origin",
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -50,22 +49,13 @@ export const metadata: Metadata = {
     siteName: "BrowserProbe",
     title: "BrowserProbe — Free Browser Diagnostics & Privacy Tools",
     description:
-      "Probe your browser to discover what websites can see. Free tools for browser detection, fingerprinting, privacy checks, and more.",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "BrowserProbe — Free Browser Diagnostics & Privacy Tools",
-      },
-    ],
+      "Generate a clear browser diagnostic report with evidence-based privacy, IP, fingerprinting, screen, storage, and feature checks.",
   },
   twitter: {
     card: "summary_large_image",
     title: "BrowserProbe — Free Browser Diagnostics & Privacy Tools",
     description:
-      "Probe your browser to discover what websites can see. Free tools for browser detection, fingerprinting, privacy checks, and more.",
-    images: ["/og-image.png"],
+      "Generate a clear browser diagnostic report with evidence-based privacy, IP, fingerprinting, screen, storage, and feature checks.",
   },
   robots: {
     index: true,
@@ -91,7 +81,7 @@ export default function RootLayout({
     name: "BrowserProbe",
     url: "https://browserprobe.app",
     description:
-      "Free browser diagnostics and privacy tools. Discover what websites can see about your browser, device, and network.",
+      "Evidence-based browser diagnostics and privacy tools that explain what websites can observe about your browser, device, and network.",
     applicationCategory: "UtilityApplication",
     operatingSystem: "Any",
     offers: {
@@ -102,42 +92,25 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
+    <html lang="en" className={`${archivo.variable} ${ibmPlexMono.variable}`}>
       <head>
+        <link rel="dns-prefetch" href="//quge5.com" />
+        <link rel="preconnect" href="https://quge5.com" />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
         />
-      </head>
-      <body style={{ fontFamily: "var(--font-sans), system-ui, sans-serif" }}>
-        {/* Google Analytics Tag */}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-VSS6DZES93"
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-VSS6DZES93');
-          `}
-        </Script>
-
-        {/* Ad Tag 1 */}
-        <Script
-          src="https://5gvci.com/act/files/tag.min.js?z=11134976"
-          strategy="afterInteractive"
+        <script
+          src="https://quge5.com/88/tag.min.js"
+          data-zone="273538"
+          async
           data-cfasync="false"
         />
-
-        {/* Ad Tag 2 */}
-        <Script id="ad-tag-2" strategy="afterInteractive">
-          {`(function(s){s.dataset.zone='11134981',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`}
-        </Script>
-
+      </head>
+      <body>
+        <a href="#main-content" className="skipLink">Skip to content</a>
         <Header />
-        <main>{children}</main>
+        <main id="main-content">{children}</main>
         <Footer />
       </body>
     </html>

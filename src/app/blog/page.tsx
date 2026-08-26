@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import styles from "./blog.module.css";
 
 export const metadata: Metadata = {
-  title: "Browser Privacy & Security Blog | BrowserProbe",
+  title: "Browser Privacy & Security Guides",
   description: "Deep dives into browser fingerprinting, WebRTC leaks, canvas tracking, privacy headers, and hardware exposure. Read expert security analyses and guides.",
   alternates: { canonical: "https://browserprobe.app/blog" },
 };

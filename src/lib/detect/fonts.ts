@@ -28,36 +28,38 @@ export function detectFonts(): FontInfo {
   span.textContent = testStr;
   document.body.appendChild(span);
 
-  const baseWidths: Record<string, number> = {};
-  const baseHeights: Record<string, number> = {};
+  try {
+    const baseWidths: Record<string, number> = {};
+    const baseHeights: Record<string, number> = {};
 
-  for (const base of baseFonts) {
-    span.style.fontFamily = base;
-    baseWidths[base] = span.offsetWidth;
-    baseHeights[base] = span.offsetHeight;
-  }
-
-  const detected: string[] = [];
-
-  for (const font of TEST_FONTS) {
-    let found = false;
     for (const base of baseFonts) {
-      span.style.fontFamily = `"${font}", ${base}`;
-      if (
-        span.offsetWidth !== baseWidths[base] ||
-        span.offsetHeight !== baseHeights[base]
-      ) {
-        found = true;
-        break;
-      }
+      span.style.fontFamily = base;
+      baseWidths[base] = span.offsetWidth;
+      baseHeights[base] = span.offsetHeight;
     }
-    if (found) detected.push(font);
+
+    const detected: string[] = [];
+
+    for (const font of TEST_FONTS) {
+      let found = false;
+      for (const base of baseFonts) {
+        span.style.fontFamily = `"${font}", ${base}`;
+        if (
+          span.offsetWidth !== baseWidths[base] ||
+          span.offsetHeight !== baseHeights[base]
+        ) {
+          found = true;
+          break;
+        }
+      }
+      if (found) detected.push(font);
+    }
+
+    return {
+      detectedFonts: detected,
+      totalTested: TEST_FONTS.length,
+    };
+  } finally {
+    span.remove();
   }
-
-  document.body.removeChild(span);
-
-  return {
-    detectedFonts: detected,
-    totalTested: TEST_FONTS.length,
-  };
 }

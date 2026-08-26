@@ -12,13 +12,13 @@ export const blogPosts: BlogPost[] = [
   {
     slug: "what-is-browser-fingerprinting",
     title: "What Is Browser Fingerprinting? A Technical Deep Dive (2026)",
-    excerpt: "Learn how modern websites build a highly unique mathematical signature of your device without relying on cookies or local storage.",
+    excerpt: "Learn how websites combine browser signals into probabilistic identifiers without relying only on cookies or local storage.",
     date: "2026-06-01",
     readTime: "8 min read",
     category: "Tracking",
-    content: `Browser fingerprinting is a powerful, silent, and cookie-less tracking method used by websites to identify individual users. Unlike traditional tracking cookies that store a text file directly on your device, fingerprinting builds a unique mathematical identifier by gathering information about your web browser, operating system, hardware capabilities, and network connection.
+    content: `Browser fingerprinting is a collection of techniques that combine browser, operating-system, hardware, and network signals to recognize or classify a browser. Unlike a cookie, the resulting identifier can be recomputed from observable properties instead of read from a stored ID.
 
-Because this profile is generated from passive device characteristics that your browser naturally exposes to load pages, it is extremely difficult to bypass, reset, or prevent.
+Fingerprinting is probabilistic: a result may be common, rare, stable, or unstable depending on the population, time window, browser defenses, and signals collected. No single sample proves identity or uniqueness.
 
 ## The Shift from Cookies to Fingerprinting
 
@@ -30,59 +30,59 @@ However, as browser privacy settings improved, search engines added tracking pro
 
 ## How a Browser Fingerprint Is Structured
 
-Every time your browser requests a web page, it shares dozens of properties to optimize how the page is displayed. Fingerprinting scripts gather these properties and combine them using a hashing algorithm (like MurmurHash3) to generate a short, unique alphanumeric string (e.g., \`4b7f938d2a1b\`).
+Every time your browser loads a page, it exposes properties needed for content negotiation and web features. A fingerprinting system may combine those values directly or hash them into a shorter identifier. Hashing makes data compact; it does not make the observations unique or prove who produced them.
 
 Here are the primary components that feed into this signature:
 
 ### 1. User Agent and HTTP Headers
-The \`User-Agent\` header contains details about your browser name, browser version, operating system, and hardware architecture. Additionally, the order and types of headers your browser sends (such as \`Accept\`, \`Accept-Language\`, and \`Accept-Encoding\`) provide unique signatures.
+The \`User-Agent\` header can contain browser and platform details, although modern browsers may reduce or freeze parts of it. Header values and ordering can add signals, but many visitors share the same pattern.
 
 ### 2. Screen and Display Configurations
-Websites read your monitor's total resolution, available viewport dimensions (excluding toolbars), color depth, pixel depth, device pixel ratio (DPR), and orientation. Users with secondary monitors, custom scale factors, or custom window sizes create highly specific display fingerprints.
+Websites can read screen and viewport dimensions, color depth, device pixel ratio (DPR), and orientation. Window size and scaling may narrow a population, while browser protections can round or standardize values.
 
 ### 3. Rendering Engine & Hardware Acceleration (Canvas & WebGL)
 By drawing hidden shapes and text on an HTML5 \`<canvas>\` or WebGL canvas, scripts analyze how your graphics card (GPU) renders imagery. Subtle differences in anti-aliasing, rasterization algorithms, and graphics card driver versions cause devices to render pixels slightly differently.
 
 ### 4. Font Enumeration
-Fingerprinters check for the presence of hundreds of system fonts by measuring text dimensions using HTML element widths. A device with custom fonts installed (from design tools, office software, or localization packs) stands out significantly from standard configurations.
+Fingerprinters can test font availability by comparing text dimensions. Custom fonts may make a result less common, while fallback substitution and browser restrictions can make the test incomplete.
 
 ### 5. Timezones, Locale & Locales
-The JavaScript \`Intl\` API exposes your exact local timezone, locale string, language list, calendar system, and default currency. If you use a VPN to change your IP address but leave your system timezone unchanged, websites can immediately flag the mismatch.
+The JavaScript \`Intl\` API can expose a configured timezone, locale, language preferences, calendar, and numbering system. A timezone/IP mismatch can be one risk signal, but it does not by itself prove location, VPN use, or fraud.
 
 ## Hashing and Entropy: The Math Behind the Track
 
-In information theory, **entropy** measures the amount of uncertainty or uniqueness in a dataset, expressed in bits. A browser fingerprint has a specific entropy score. 
+In information theory, **entropy** measures uncertainty in a distribution, expressed in bits. Estimating fingerprint entropy therefore requires a defined population and representative measurements; this page cannot derive it from one visitor.
 
 \`\`\`
 Entropy (H) = - Σ (P(x) * log2(P(x)))
 \`\`\`
 
-Where \`P(x)\` is the probability of a specific configuration. If a specific fingerprint configuration occurs in only 1 out of 1,000,000 browsers, it provides roughly 20 bits of entropy. When a fingerprint achieves 33 bits of entropy, it has successfully isolated your browser from every other device on the internet.
+Where \`P(x)\` is the probability of a configuration in the measured population. A configuration observed once per million samples has about 20 bits of self-information in that dataset. It does not follow that the browser is isolated from every device on the internet.
 
 ## Actionable Mitigation Strategies
 
 Traditional adblockers and incognito mode do not stop browser fingerprinting because your underlying hardware remains identical. To resist fingerprinting, you must reduce your entropy:
 
-1. **Use Tor Browser**: Tor is the gold standard for fingerprint protection because all Tor users are forced to share the exact same standardized user agent, display dimensions, rendering pipeline, and font list. This makes all users look completely identical, reducing individual entropy to zero.
-2. **Enable Farbling in Brave**: Brave shields use a technique called "farbling" or randomization. Instead of hiding your GPU or canvas outputs, Brave adds subtle, random mathematical noise to API results. Because the noise changes slightly on every visit, your fingerprint is constantly rotating, making it impossible for tracking databases to link your sessions.
+1. **Use a browser designed for an anonymity set**: Tor Browser standardizes and restricts many surfaces so users resemble one another. Differences can still exist, and behavior or account activity can still identify a person.
+2. **Use built-in fingerprinting defenses**: Brave applies site- and session-scoped randomization called farbling to selected APIs. It raises the cost of stable cross-site measurement; it does not make linking sessions impossible. See [Brave's explanation of farbling](https://brave.com/privacy-updates/4-fingerprinting-defenses-2.0/).
 3. **Use Firefox ResistFingerprinting (RFP)**: Entering \`about:config\` and enabling \`privacy.resistFingerprinting\` configures Firefox to act similarly to Tor Browser, capping display sizes, spoofing timezones, and restricting font checks.
 
-Use [BrowserProbe's Homepage](/) diagnostic tools to see exactly how unique your browser fingerprint is today, and test if your privacy shields are successfully spoofing these trackers.`,
+Use [BrowserProbe's homepage](/) to inspect which signals this browser exposes. The report deliberately does not claim to measure global uniqueness from a single visit.`,
   },
   {
     slug: "webrtc-leak-prevention",
     title: "How to Test and Prevent WebRTC IP Leaks: The Complete Guide",
-    excerpt: "WebRTC allows web apps to bypass VPN routing to discover your real local and public IP addresses. Learn how WebRTC leaks work and how to secure them.",
+    excerpt: "Learn how WebRTC ICE candidates expose network addresses, how to compare them with a VPN endpoint, and when a result needs review.",
     date: "2026-05-20",
     readTime: "6 min read",
     category: "Security",
-    content: `WebRTC (Web Real-Time Communication) is an open-source standard that enables web browsers to establish direct, peer-to-peer (P2P) connections for video calls, voice chat, and decentralized file sharing. While it powers seamless, plugin-free applications like Discord, Zoom, and Google Meet, WebRTC features a major privacy vulnerability: **it can leak your real IP address, even if you are using a VPN.**
+    content: `WebRTC (Web Real-Time Communication) lets browsers negotiate real-time audio, video, and data connections. During connection setup, ICE candidates may contain host, server-reflexive, or relay addresses. Those addresses can reveal more network information than a visitor expects.
 
-This vulnerability allows third-party websites to bypass your encrypted VPN tunnel to read both your public and local IP addresses.
+Whether this reveals an address outside a VPN depends on the browser, operating system, VPN routing, and ICE policy. Seeing a public candidate is evidence to compare—not automatic proof of a VPN leak.
 
-## How WebRTC Bypasses Your VPN
+## How ICE Discovers Network Paths
 
-To understand how a WebRTC leak occurs, we must look at how browsers establish peer-to-peer connections. Because peer connections must bypass local firewalls and routers, the browser uses a protocol called **Interactive Connectivity Establishment (ICE)**.
+To understand the exposure, look at how browsers establish peer-to-peer connections. Because peers may sit behind NAT and firewalls, browsers use **Interactive Connectivity Establishment (ICE)** to gather and test possible paths.
 
 ICE candidates are generated by querying external **STUN** (Session Traversal Utilities for NAT) servers. 
 
@@ -91,9 +91,9 @@ ICE candidates are generated by querying external **STUN** (Session Traversal Ut
 [Browser] <--- (Returns Public IP) <--- [Google STUN Server]
 \`\`\`
 
-During this query, WebRTC opens a direct socket connection to the STUN server. Because this socket is established at the OS network level, many web browsers bypass the default routing tables set by VPN virtual network interfaces. 
+During this query, the browser sends traffic to the STUN server and may receive a server-reflexive candidate representing the public endpoint observed for that route.
 
-As a result, the STUN query resolves your actual, underlying public IP address (provided by your local ISP) alongside your local network addresses (such as \`192.168.1.15\`).
+Correctly configured VPNs normally route this traffic through the tunnel. A routing or browser-policy problem can expose a different public endpoint. Modern browsers may replace local numeric host candidates with mDNS names.
 
 ## The WebRTC IP Extraction Script
 
@@ -117,7 +117,7 @@ pc.onicecandidate = (event) => {
 };
 \`\`\`
 
-Any tracker embedded in an ad network can run this script silently in the background of a web page and log your real location in under 100 milliseconds.
+A page can trigger ICE gathering without camera or microphone permission. Candidate timing varies, and an IP address provides approximate network attribution rather than a person's precise location.
 
 ## How to Test for WebRTC Leaks
 
@@ -125,12 +125,12 @@ To verify if your privacy setup is leaking your network configuration:
 
 1. Enable your VPN or proxy.
 2. Visit [BrowserProbe's WebRTC Leak Test](/tools/webrtc-leak-test).
-3. Check the "Leaked IPs" field.
-4. If you see your **home ISP IP address** or **local IP addresses** (like \`10.x.x.x\` or \`192.168.x.x\`), your browser is actively leaking your real network identity.
+3. Compare any public ICE candidate with the public IP shown by the IP check and the endpoint expected from your VPN provider.
+4. Treat a different home-ISP address as strong evidence to investigate. A private address (such as \`10.x.x.x\` or \`192.168.x.x\`) reveals local network topology but is not a globally routable identity.
 
 ## Step-by-Step Mitigation Guide
 
-To secure your connection, you must instruct your browser to block ICE candidate enumeration or disable WebRTC altogether.
+To reduce exposure, prefer a VPN that explicitly handles WebRTC and verify its behavior after browser or VPN updates. Blocking non-proxied UDP or requiring relay candidates can reduce address exposure but may break calls or increase latency.
 
 ### 1. Mozilla Firefox (Native Control)
 Firefox is the only browser that allows you to disable WebRTC entirely without third-party extensions:
@@ -141,28 +141,23 @@ Firefox is the only browser that allows you to disable WebRTC entirely without t
 *Note: This will prevent WebRTC-based video calling services from running in your browser.*
 
 ### 2. Google Chrome & Microsoft Edge
-Chromium browsers do not expose a native toggle to turn off WebRTC, but you can configure WebRTC routing policies.
-- Install the **WebRTC Leak Prevent** extension from the Chrome Web Store.
-- Configure the extension to use the policy **"Disable non-proxied UDP"**. This forces all WebRTC traffic through your configured VPN/proxy interface, ensuring only the proxy's IP is revealed.
+Chromium browser controls and extension policies change over time. Prefer the current documentation from your browser and VPN vendor, and be cautious with extensions that can read browsing data.
 
 ### 3. Brave Browser
-Brave includes native WebRTC controls in its Shields settings.
-- Open Brave Settings and navigate to **Shields**.
-- Find the **WebRTC IP Handling Policy** dropdown.
-- Select **Disable Non-Proxied UDP** or **Default Public Interface Only** to lock down ICE candidate leaks.
+Brave and managed Chromium environments may expose WebRTC IP-handling policies. Use the least permissive setting compatible with the calling services you need, then rerun the comparison test.
 
-By configuring these routing settings, you can enjoy VPN security without completely breaking compatibility with web conferencing tools.`,
+After changing a routing policy, test both address exposure and the calling services you rely on. A clean result describes that test run; it is not a permanent guarantee.`,
   },
   {
     slug: "canvas-fingerprinting-explained",
     title: "Canvas Fingerprinting: Renders, Hashes, and Silent Tracking",
-    excerpt: "Explore the GPU-level details of HTML5 Canvas fingerprinting, why it is highly unique, and how websites use it for cookie-less tracking.",
+    excerpt: "Explore how canvas rendering samples are produced, why results can differ, and how sites may combine them with other tracking signals.",
     date: "2026-05-10",
     readTime: "7 min read",
     category: "Tracking",
-    content: `HTML5 Canvas fingerprinting is one of the most widely deployed cookie-less tracking methods on the web. It operates entirely in the background, drawing hidden canvas graphics when you load a page, and extracting a unique hardware signature of your computer.
+    content: `HTML5 Canvas fingerprinting draws a known graphic, reads the rendered pixels, and summarizes the output. The operation can run in the background and contribute a rendering signal without writing a cookie.
 
-This article details the mechanics of canvas tracking, why it is so unique, and the technical strategies for blocking it.
+This article explains the mechanics, why results can vary across configurations, and the tradeoffs of common defenses.
 
 ## The Technical Execution of a Canvas Probe
 
@@ -188,42 +183,42 @@ ctx.fillText("BrowserProbe, testing 🕵️‍♂️!", 2, 15);
 const hash = murmurhash3(canvas.toDataURL());
 \`\`\`
 
-## Why Are Canvas Hashes Unique?
+## Why Can Canvas Results Differ?
 
 You might expect that drawing the same text with the same font would produce the identical image on every computer. In reality, the output pixel array is highly dependent on your system's hardware and software stack:
 
 - **Graphics Processing Unit (GPU)**: Different GPUs (Intel, NVIDIA, AMD, Apple M-Series) use different rasterization and anti-aliasing engines, leading to microscopic differences in sub-pixel colors.
 - **Font Rendering Engines**: Operating systems handle font smoothing (ClearType on Windows vs. Quartz on macOS) differently, producing slight variations in text curves and outline geometries.
-- **Drivers and Browser Versions**: GPU drivers and the browser's graphics rendering pipeline (ANGL, WebGL wrappers, etc.) introduce floating-point calculation differences that affect rendering coordinates.
+- **Drivers and Browser Versions**: GPU drivers and the browser's graphics rendering pipeline (including ANGLE and platform graphics libraries) can affect rendering details.
 
-Because of these hardware-level dependencies, the generated image hash is highly unique, acting as an excellent signature for tracking.
+Many devices still produce the same canvas result, while some configurations differ. Population data is required to estimate how identifying a given result is; the hash alone contains no proof of uniqueness.
 
 ## How to Block Canvas Trackers
 
 Defending your system against canvas fingerprinting requires either blocking the API altogether or altering its output.
 
 ### 1. Blanking/Blocking
-The simplest defense is block-level protection. When a website calls \`toDataURL()\`, the browser blocks the call or returns an empty transparent image. The Tor Browser utilizes this method, prompting you for permission whenever a site attempts to read canvas data.
+One defense is to gate or standardize canvas reads. Privacy-focused browsers may return modified output or require user interaction for some extraction paths.
 
-*The drawback*: Returning a blank canvas is highly unusual and immediately signals to the server that you are attempting to hide, making you stand out as a highly unique entity (increasing your overall behavioral uniqueness).
+*The tradeoff*: Blocking can break legitimate graphics features, and an uncommon blocking behavior may itself become another observable signal.
 
 ### 2. Canvas Randomization (Farbling)
-The most elegant defense is randomization. Brave and privacy tools like the Canvas Blocker extension intercept the canvas drawing functions and inject subtle, invisible mathematical noise into the output data. 
+Another defense is scoped randomization. Browsers such as Brave can alter selected canvas outputs using values scoped by site and session.
 
-This noise changes slightly on every page load or visit. Because the generated base64 image data changes, the resulting hash is completely different every time you reload, rendering persistent tracking databases useless.
+This can make a stable cross-site identifier harder to obtain without forcing every same-page read to change. It increases tracking cost but does not guarantee anonymity.
 
-Check out [BrowserProbe's Canvas Fingerprint Tool](/tools/canvas-fingerprint) to view the actual hidden graphic generated by your browser and examine your device's fingerprint hash in real time.`,
+Use [BrowserProbe's Canvas Fingerprint Tool](/tools/canvas-fingerprint) to view the test graphic and its repeatable sample ID. Matching or differing IDs are evidence about this rendering test—not proof of identity.`,
   },
   {
     slug: "do-not-track-vs-gpc",
     title: "Is Do Not Track Dead? Understanding GPC and Modern Privacy Laws",
-    excerpt: "Do Not Track failed because it was voluntary. Global Privacy Control (GPC) is legally enforceable. Learn the difference.",
+    excerpt: "Do Not Track lacked an enforcement model. Learn how Global Privacy Control can express legally recognized opt-out requests in covered jurisdictions.",
     date: "2026-04-28",
     readTime: "5 min read",
     category: "Privacy",
     content: `In 2009, privacy researchers proposed **Do Not Track (DNT)** — a simple HTTP request header that users could toggle in browser settings. The concept was straightforward: if a browser sent the header \`DNT: 1\`, websites were requested to disable tracking cookies, behavioral profiles, and data sharing.
 
-While DNT was adopted by major browsers, it is now considered dead. Today, its successor — **Global Privacy Control (GPC)** — is taking its place with one massive advantage: **it is legally enforceable.**
+While DNT was adopted by major browsers, it never gained consistent site compliance. Global Privacy Control (GPC) is a newer opt-out preference signal that is recognized by some privacy laws and regulators.
 
 ## Why Do Not Track Failed
 
@@ -233,7 +228,7 @@ When the header was finalized, major ad tech companies and data brokers openly i
 
 Standardization groups reached a deadlock, and the W3C tracking protection working group officially disbanded in 2019. 
 
-In fact, DNT became counterproductive: because DNT was rarely enabled by default, having the header active actually added entropy to your browser profile, making your browser *more* unique and easier to fingerprint.
+DNT can also add one observable bit to a browser profile when its value differs across users. Whether that materially improves recognition depends on the rest of the dataset.
 
 ## The Rise of Global Privacy Control (GPC)
 
@@ -247,11 +242,11 @@ GPC works under the hood via two methods:
 [Browser (Sec-GPC: 1)] ---> [Website Server] ---> Read GPC, Opt-Out User
 \`\`\`
 
-The crucial difference: **GPC has legal teeth.**
+The crucial difference: **GPC can carry legal effect in covered jurisdictions.**
 
-Under modern privacy regulations like the **California Consumer Privacy Act (CCPA)** and the **General Data Protection Regulation (GDPR)**, websites are legally required to treat a GPC signal as a valid, user-initiated request to opt out of the sale or sharing of their personal information.
+For example, California says covered businesses must honor a user-enabled GPC signal as a valid request to stop the sale or sharing of personal information. Requirements and scope vary by jurisdiction and business; GPC is not a universal technical block. See the [California Attorney General's GPC guidance](https://oag.ca.gov/privacy/ccpa).
 
-In 2022, the California Attorney General fined a major beauty brand $1.2 million for failing to honor GPC signals, setting a clear legal precedent: **ignoring GPC is a violation of consumer privacy law.**
+California's 2022 Sephora settlement included allegations that the company failed to process GPC opt-out requests. It is an important enforcement example, not proof that every site everywhere has the same obligation.
 
 ## How to Check and Enable GPC
 
@@ -266,30 +261,30 @@ To turn GPC on, use a browser that supports GPC natively:
 - **Mozilla Firefox**: Go to Settings -> Privacy & Security -> and check the box for "Tell websites not to sell or share my data".
 - **Browser Extensions**: If you use Chrome or Edge, you can enable GPC by installing the **Privacy Badger** or **Opt-Out Easy** extension.
 
-By switching to GPC, your request is no longer a polite ask — it is a legal command that websites ignore at their own financial risk.`,
+Enabling GPC is a low-friction way to express an opt-out preference. It does not block tracking by itself, and its legal effect depends on the applicable law and whether the business is covered.`,
   },
   {
     slug: "browser-data-leaks",
-    title: "10 Surprising Browser API Data Leaks (and How to Stop Them)",
-    excerpt: "From battery telemetry to exact GPU hardware models, here are 10 ways your browser silently leaks private data to websites.",
+    title: "10 Browser API Signals Websites Can Observe",
+    excerpt: "From graphics capabilities to media-device counts, here are 10 browser signals, their limits, and practical privacy tradeoffs.",
     date: "2026-04-15",
     readTime: "8 min read",
     category: "Privacy",
-    content: `Every time you click a link or visit a web page, your browser shares a wealth of details about your computer, screen, local network, and hardware configurations. While browser APIs are designed to make web apps powerful, they are also exploited by advertisers to leak personal data.
+    content: `When you visit a page, browser APIs expose capabilities needed by web applications. Some results can also contribute to profiling when they are collected and combined at scale.
 
-Here are 10 browser APIs that leak data, why they pose a privacy risk, and how to lock down your system.
+Here are 10 observable signals, what they can reveal, and the limitations that matter when interpreting them.
 
 ## 1. GPU Hardware Models (WebGL API)
-The WebGL API provides access to hardware-accelerated graphics. However, calling \`gl.getParameter(gl.getExtension('WEBGL_debug_renderer_info').UNMASKED_RENDERER_WEBGL)\` leaks your exact graphics card manufacturer and card model (e.g., \`NVIDIA GeForce RTX 4070/PCIe/SSE2\`). 
+The WebGL API provides access to hardware-accelerated graphics. When available, \`WEBGL_debug_renderer_info\` can return a renderer and vendor string. Browsers may expose an exact model, a generalized value, or a software renderer.
 
-- **Risk**: High uniqueness for custom GPU drivers.
-- **Solution**: Use Brave or Firefox with ResistFingerprinting to spoof the GPU model as a generic renderer.
+- **Risk**: Adds graphics-stack information to a broader profile.
+- **Mitigation**: Built-in browser fingerprinting defenses may standardize or restrict the value; aggressive overrides can break graphics-heavy sites.
 
 ## 2. Battery Telemetry (Battery Status API)
 The Battery Status API exposes your device's battery level percentage and remaining charging time. 
 
-- **Risk**: Precision metrics (like \`0.841392\`) update constantly, creating a temporary tracking identifier that allows scripts to follow your sessions across private windows.
-- **Solution**: Modern browsers like Safari and Firefox have removed this API. If you use Chrome, you can block it using permissions managers.
+- **Risk**: Time-varying values can contribute a short-lived correlation signal where the API is available.
+- **Mitigation**: Browser support is limited and values may be rounded. Check current browser policy rather than assuming the API is exposed.
 
 ## 3. Installed System Fonts
 Websites can measure text render dimensions to test for the presence of hundreds of pre-installed system fonts.
@@ -298,49 +293,49 @@ Websites can measure text render dimensions to test for the presence of hundreds
 - **Solution**: Use a browser extension that blocks font measurement or enforces standard system fonts.
 
 ## 4. Local IP Leaks (WebRTC API)
-WebRTC queries STUN servers to resolve networking paths, revealing your local network IP (like \`192.168.1.42\`) and bypassing VPN tunnels.
+WebRTC gathers ICE candidates to discover possible network paths. Candidates may include mDNS names, private addresses, public endpoints, or relay addresses.
 
-- **Risk**: Exposes your actual ISP IP even behind a VPN.
-- **Solution**: Turn off WebRTC in Firefox settings or install a routing blocker on Chromium browsers.
+- **Risk**: A routing problem can expose a public endpoint different from the VPN address; numeric local addresses reveal topology.
+- **Mitigation**: Use a VPN that handles WebRTC, compare addresses, and follow current browser/VPN routing guidance.
 
 ## 5. Audio Processing Hashes (Web Audio API)
-By rendering an inaudible audio wave in an OfflineAudioContext, scripts analyze sub-pixel math discrepancies in your sound card's digital-to-analog converter (DAC).
+By rendering a known signal in an OfflineAudioContext, scripts can summarize differences in the browser and operating system's audio-processing implementation. Offline rendering does not pass through a physical DAC.
 
-- **Risk**: Permanent hardware fingerprint.
-- **Solution**: Use Brave or extensions to add mathematical noise to AudioContext outputs.
+- **Risk**: A repeatable result can add one signal to a broader fingerprint.
+- **Mitigation**: Browser randomization or standardization can reduce stability, with possible compatibility tradeoffs.
 
 ## 6. Timezone Offset & Locale Discrepancies
 The \`Intl.DateTimeFormat().resolvedOptions().timeZone\` property exposes your system timezone (e.g., \`Asia/Kolkata\`).
 
-- **Risk**: If your VPN routes through the US but your timezone remains local, ad networks flag the location discrepancy.
-- **Solution**: Spoof your timezone or configure your browser to match your VPN location.
+- **Risk**: A timezone/IP mismatch may contribute to fraud or profiling models, but does not prove a physical location.
+- **Mitigation**: Privacy browsers may standardize timezone. Manual spoofing can also create inconsistent signals.
 
 ## 7. Media Device Count (MediaDevices API)
 Calling \`navigator.mediaDevices.enumerateDevices()\` returns the count and connection kinds (mic, speaker, webcam) connected to your computer.
 
-- **Risk**: Users with multiple audio input/output routes are easily identified.
-- **Solution**: Restrict Media Device permissions to block device enumeration.
+- **Risk**: Device kinds and counts can add a signal; labels and identifiers are normally permission-gated.
+- **Mitigation**: Review site permissions. Counts can remain visible or incomplete even without capture permission.
 
 ## 8. CPU Logical Cores (Hardware Concurrency)
 \`navigator.hardwareConcurrency\` returns the number of logical CPU cores on your processor (e.g., 8, 12, or 16).
 
-- **Risk**: Exposes hardware tiers.
-- **Solution**: Spoof this value to a generic standard (e.g., 4 or 8) in privacy settings.
+- **Risk**: Exposes a coarse hardware tier.
+- **Mitigation**: Some browsers cap or standardize the value. Manual spoofing may cause compatibility issues.
 
 ## 9. Network Connection Estimates (Network Information API)
 Exposes your connection type (Wi-Fi, cellular) and estimated download speeds.
 
-- **Risk**: Adds extra bits of entropy to your fingerprint.
-- **Solution**: Use Firefox or Safari which block this API.
+- **Risk**: Adds coarse, changing network information where supported.
+- **Mitigation**: Support varies by browser and values are estimates rather than a speed test.
 
 ## 10. Device Memory API
-\`navigator.deviceMemory\` returns the approximate amount of RAM in gigabytes (e.g., 2, 4, or 8 GB).
+\`navigator.deviceMemory\` returns an approximate, rounded memory tier where supported.
 
 - **Risk**: Categorizes your device category.
-- **Solution**: Spoof this property to a standard level.
+- **Mitigation**: Browser rounding and caps already reduce precision; blocking or spoofing may affect adaptive sites.
 
 ## Test Your Browser Leak Status
-Visit the [BrowserProbe Homepage](/) to run all 10 hardware, network, and privacy tests instantly in a single scan. Make sure your privacy blockers are configured correctly to hide your device signatures!`,
+Visit the [BrowserProbe homepage](/) to inspect hardware, network, and privacy signals in one report. Use the evidence and limitation labels before deciding whether a setting change is useful.`,
   },
 ];
 

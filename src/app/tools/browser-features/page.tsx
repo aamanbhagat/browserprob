@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import ProbeAnimation from "@/components/ProbeAnimation";
+import ToolLoading from "@/components/ToolLoading";
 import RelatedTools from "@/components/RelatedTools";
 import styles from "../tools.module.css";
 
@@ -9,7 +9,7 @@ interface Feature { name: string; supported: boolean; }
 export default function BrowserFeaturesPage() {
   const [features, setFeatures] = useState<Feature[] | null>(null);
   useEffect(() => {
-    const t = setTimeout(() => {
+    const frame = requestAnimationFrame(() => {
       const f: Feature[] = [
         { name: "WebSocket", supported: typeof WebSocket !== "undefined" },
         { name: "Fetch API", supported: typeof fetch !== "undefined" },
@@ -45,10 +45,10 @@ export default function BrowserFeaturesPage() {
         { name: "WebGL 2.0", supported: !!document.createElement("canvas").getContext("webgl2") },
       ];
       setFeatures(f);
-    }, 600);
-    return () => clearTimeout(t);
+    });
+    return () => cancelAnimationFrame(frame);
   }, []);
-  if (!features) return <div className={styles.toolPage}><div className="container"><ProbeAnimation /></div></div>;
+  if (!features) return <ToolLoading title="Browser Features Support" />;
   const supported = features.filter(f => f.supported).length;
   const schema = {
     "@context": "https://schema.org",
@@ -92,7 +92,7 @@ export default function BrowserFeaturesPage() {
       <div className="container">
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }}
         />
       <div className={styles.header}><span className={styles.icon}>✅</span><h1 className={styles.title}>Browser Features Support</h1><p className={styles.subtitle}>Test your browser&apos;s support for {features.length} modern web APIs and features.</p></div>
       <div className={styles.resultsCard} style={{ marginBottom: "var(--space-lg)" }}>

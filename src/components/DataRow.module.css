@@ -2,7 +2,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px var(--space-md);
+  padding: 9px 13px;
   border-bottom: 1px solid var(--border-subtle);
   transition: background var(--transition-fast);
   gap: var(--space-md);
@@ -13,15 +13,15 @@
 }
 
 .row:hover {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--bg-card-hover);
 }
 
 .label {
-  font-size: 0.85rem;
+  font-size: 0.68rem;
   color: var(--text-secondary);
   font-weight: 500;
   flex-shrink: 0;
-  min-width: 140px;
+  min-width: 0;
 }
 
 .valueWrap {
@@ -34,7 +34,7 @@
 }
 
 .value {
-  font-size: 0.88rem;
+  font-size: 0.69rem;
   color: var(--text-primary);
   text-align: right;
   word-break: break-all;
@@ -42,7 +42,7 @@
 
 .mono {
   font-family: var(--font-mono), monospace;
-  font-size: 0.82rem;
+  font-size: 0.62rem;
 }
 
 .unavailable {
@@ -52,8 +52,8 @@
 
 .copyBtn {
   flex-shrink: 0;
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -61,16 +61,20 @@
   font-size: 0.85rem;
   color: var(--text-muted);
   transition: all var(--transition-fast);
-  opacity: 0;
+  opacity: 0.2;
 }
 
 .row:hover .copyBtn {
   opacity: 1;
 }
 
+.copyBtn:focus-visible {
+  opacity: 1;
+}
+
 .copyBtn:hover {
-  color: var(--accent-cyan);
-  background: rgba(0, 212, 255, 0.1);
+  color: var(--accent-blue);
+  background: var(--accent-soft);
 }
 
 @media (max-width: 640px) {
