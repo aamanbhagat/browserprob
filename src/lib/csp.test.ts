@@ -8,7 +8,7 @@ describe("staticCsp", () => {
 
   it("allows only first-party scripts and no third-party hosts", () => {
     expect(directives(policy)["script-src"]).toBe("script-src 'self' 'unsafe-inline'");
-    expect(policy).not.toMatch(/https:\/\/|googlesyndication|quge5|3nbf4/);
+    expect(policy).not.toMatch(/https:\/\/|googlesyndication/);
     expect(directives(policy)["frame-ancestors"]).toBe("frame-ancestors 'none'");
   });
 

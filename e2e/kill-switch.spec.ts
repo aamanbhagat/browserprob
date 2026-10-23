@@ -12,7 +12,8 @@ test("a returning visitor's old worker is replaced and removed", async ({ contex
   await context.route("**/__blank", (route) => route.fulfill({ contentType: "text/html", body: "<!doctype html><title>blank</title>" }));
   await page.goto("/__blank");
   await page.evaluate(async () => {
-    await navigator.serviceWorker.register("/sw.js?v=3.1.647&p=11662682");
+    // The old ad worker was registered with query parameters; the browser re-checks that exact URL.
+    await navigator.serviceWorker.register("/sw.js?v=1&zone=old");
     await navigator.serviceWorker.ready;
   });
   await expect.poll(() => page.evaluate(() => caches.keys())).toContain("old-ad-cache");
