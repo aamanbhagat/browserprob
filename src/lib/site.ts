@@ -4,8 +4,8 @@ export const SOURCE_URL = "https://github.com/aamanbhagat/browserprob";
 export const ISSUES_URL = `${SOURCE_URL}/issues`;
 
 // TODO(owner): replace both placeholders before deploying. They appear on /about and /contact.
-export const OWNER_NAME = "TODO(owner): site owner's name";
-export const CONTACT_EMAIL = "TODO(owner): contact email";
+export const OWNER_NAME = "Aman Bhagat";
+export const CONTACT_EMAIL = "amanbhagat366@gmail.com";
 
 export function absoluteUrl(path: string): string {
   return `${SITE_URL}${path === "/" ? "" : path}`;
