@@ -54,3 +54,31 @@ export function detectTimezone(now = new Date()): TimezoneInfo {
     }).format(now),
   };
 }
+
+/** Minutes east of UTC for a time zone at a given moment, using Intl. Returns null for unknown zones. */
+export function utcOffsetMinutes(timeZone: string, at = new Date()): number | null {
+  try {
+    const parts = new Intl.DateTimeFormat("en-US", {
+      timeZone,
+      hourCycle: "h23",
+      year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit",
+    }).formatToParts(at);
+    const get = (type: string) => Number(parts.find((part) => part.type === type)?.value);
+    const asUtc = Date.UTC(get("year"), get("month") - 1, get("day"), get("hour"), get("minute"), get("second"));
+    return Math.round((asUtc - Math.floor(at.getTime() / 1000) * 1000) / 60000);
+  } catch {
+    return null;
+  }
+}
+
+export type TimezoneComparison = "same-zone" | "same-offset" | "different" | "unknown";
+
+/** Compares the browser's time zone with the one an IP-geolocation database suggests. */
+export function compareTimezones(browserZone: string, ipZone: string | null, at = new Date()): TimezoneComparison {
+  if (!ipZone || !browserZone || browserZone === "Unknown") return "unknown";
+  if (canonicalizeTimezone(browserZone) === canonicalizeTimezone(ipZone)) return "same-zone";
+  const a = utcOffsetMinutes(browserZone, at);
+  const b = utcOffsetMinutes(ipZone, at);
+  if (a === null || b === null) return "unknown";
+  return a === b ? "same-offset" : "different";
+}

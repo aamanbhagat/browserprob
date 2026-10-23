@@ -2,63 +2,72 @@ import { fingerprintNumbers } from "@/lib/hash";
 
 export interface AudioInfo {
   supported: boolean;
+  /** Sample ID of the first offline render. */
   fingerprint: string;
+  /** Sample ID of a second, identical render. */
+  secondFingerprint: string;
   sampleRate: number;
-  channelCount: number;
+  /** "complete", "timeout" or "N/A". */
   state: string;
+  /** "stable" when both renders match, "varies" when they differ, "unavailable" otherwise. */
+  renders: "stable" | "varies" | "unavailable";
+}
+
+const SAMPLE_RATE = 44100;
+const LENGTH = 4096;
+
+type OfflineContextConstructor = typeof OfflineAudioContext;
+
+// Renders a fixed oscillator → compressor graph silently. Nothing reaches the speakers, and no live
+// AudioContext is created, so browsers' autoplay policies are not involved.
+async function renderSample(OfflineCtx: OfflineContextConstructor): Promise<Float32Array | null> {
+  const context = new OfflineCtx(1, LENGTH, SAMPLE_RATE);
+
+  const oscillator = context.createOscillator();
+  oscillator.type = "triangle";
+  oscillator.frequency.setValueAtTime(10000, context.currentTime);
+
+  const compressor = context.createDynamicsCompressor();
+  compressor.threshold.setValueAtTime(-50, context.currentTime);
+  compressor.knee.setValueAtTime(40, context.currentTime);
+  compressor.ratio.setValueAtTime(12, context.currentTime);
+  compressor.attack.setValueAtTime(0, context.currentTime);
+  compressor.release.setValueAtTime(0.25, context.currentTime);
+
+  oscillator.connect(compressor);
+  compressor.connect(context.destination);
+  oscillator.start(0);
+
+  const rendered = await Promise.race([
+    context.startRendering(),
+    new Promise<null>((resolve) => setTimeout(() => resolve(null), 2000)),
+  ]);
+  return rendered ? rendered.getChannelData(0) : null;
 }
 
 export async function detectAudio(): Promise<AudioInfo> {
-  const fail: AudioInfo = { supported: false, fingerprint: "N/A", sampleRate: 0, channelCount: 0, state: "N/A" };
+  const fail: AudioInfo = { supported: false, fingerprint: "N/A", secondFingerprint: "N/A", sampleRate: 0, state: "N/A", renders: "unavailable" };
 
   try {
-    // Use OfflineAudioContext — it processes immediately without needing
-    // a user gesture, unlike the live AudioContext which starts suspended.
-    const OfflineCtx = window.OfflineAudioContext || (window as unknown as { webkitOfflineAudioContext: typeof OfflineAudioContext }).webkitOfflineAudioContext;
+    const OfflineCtx =
+      window.OfflineAudioContext ||
+      (window as unknown as { webkitOfflineAudioContext?: OfflineContextConstructor }).webkitOfflineAudioContext;
     if (!OfflineCtx) return fail;
 
-    const length = 4096;
-    const sampleRate = 44100;
-    const context = new OfflineCtx(1, length, sampleRate);
+    const first = await renderSample(OfflineCtx);
+    if (!first) return { ...fail, supported: true, sampleRate: SAMPLE_RATE, state: "timeout" };
+    const second = await renderSample(OfflineCtx);
 
-    // Also probe the live context for metadata (but don't use it for processing)
-    const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-    let channelCount = 0;
-    if (AudioCtx) {
-      try {
-        const liveCtx = new AudioCtx();
-        channelCount = liveCtx.destination.maxChannelCount;
-        liveCtx.close();
-      } catch { /* */ }
-    }
-
-    const oscillator = context.createOscillator();
-    oscillator.type = "triangle";
-    oscillator.frequency.setValueAtTime(10000, context.currentTime);
-
-    const compressor = context.createDynamicsCompressor();
-    compressor.threshold.setValueAtTime(-50, context.currentTime);
-    compressor.knee.setValueAtTime(40, context.currentTime);
-    compressor.ratio.setValueAtTime(12, context.currentTime);
-    compressor.attack.setValueAtTime(0, context.currentTime);
-    compressor.release.setValueAtTime(0.25, context.currentTime);
-
-    oscillator.connect(compressor);
-    compressor.connect(context.destination);
-    oscillator.start(0);
-
-    // Race between rendering and a 2s timeout
-    const rendered = await Promise.race([
-      context.startRendering(),
-      new Promise<null>((resolve) => setTimeout(() => resolve(null), 2000)),
-    ]);
-
-    if (!rendered) return { ...fail, supported: true, sampleRate, channelCount, state: "timeout" };
-
-    const data = rendered.getChannelData(0);
-    const fingerprint = fingerprintNumbers(data);
-
-    return { supported: true, fingerprint, sampleRate, channelCount, state: "complete" };
+    const fingerprint = fingerprintNumbers(first);
+    const secondFingerprint = second ? fingerprintNumbers(second) : "N/A";
+    return {
+      supported: true,
+      fingerprint,
+      secondFingerprint,
+      sampleRate: SAMPLE_RATE,
+      state: "complete",
+      renders: second ? (fingerprint === secondFingerprint ? "stable" : "varies") : "unavailable",
+    };
   } catch {
     return fail;
   }

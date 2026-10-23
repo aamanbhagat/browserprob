@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import SiteChrome from "@/components/SiteChrome";
+import Footer from "@/components/Footer";
+import Header from "@/components/Header";
 import ServiceWorkerCleanup from "@/components/ServiceWorkerCleanup";
 
 export const metadata: Metadata = {
@@ -87,9 +88,9 @@ export default function RootLayout({
       </head>
       <body>
         <a href="#main-content" className="skipLink">Skip to content</a>
-        <SiteChrome position="header" />
+        <Header />
         <main id="main-content">{children}</main>
-        <SiteChrome position="footer" />
+        <Footer />
         <ServiceWorkerCleanup />
       </body>
     </html>

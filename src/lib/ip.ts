@@ -56,35 +56,102 @@ export function getIpVersion(input: string): IpVersion {
   return null;
 }
 
-export function classifyIpAddress(input: string): IpScope {
+/**
+ * Returns the embedded IPv4 address for IPv4-mapped IPv6 input (`::ffff:192.0.2.1`), otherwise the
+ * normalized input. Proxies and dual-stack sockets often report IPv4 clients in this form.
+ */
+export function unwrapIpv4Mapped(input: string | null | undefined): string {
   const value = normalizeIpAddress(input);
+  const dotted = value.match(/^(?:0{0,4}:){0,5}:?ffff:(\d{1,3}(?:\.\d{1,3}){3})$/);
+  if (dotted && isValidIpv4(dotted[1])) return dotted[1];
+  const hex = value.match(/^(?:0{0,4}:){0,5}:?ffff:([0-9a-f]{1,4}):([0-9a-f]{1,4})$/);
+  if (hex) {
+    const high = parseInt(hex[1], 16);
+    const low = parseInt(hex[2], 16);
+    return [high >> 8, high & 255, low >> 8, low & 255].join(".");
+  }
+  return value;
+}
+
+interface SpecialRange {
+  scope: Exclude<IpScope, "public" | "invalid">;
+  label: string;
+}
+
+// Ranges from the IANA IPv4 and IPv6 Special-Purpose Address Registries that are not globally reachable.
+function specialIpv4Range(value: string): SpecialRange | null {
+  const [a, b, c] = value.split(".").map(Number);
+  if (a === 0) return { scope: "reserved", label: "“This network” (RFC 791)" };
+  if (a === 10) return { scope: "private", label: "Private network (RFC 1918)" };
+  if (a === 100 && b >= 64 && b <= 127) return { scope: "reserved", label: "Carrier-grade NAT shared space (RFC 6598)" };
+  if (a === 127) return { scope: "loopback", label: "Loopback (this device)" };
+  if (a === 169 && b === 254) return { scope: "link-local", label: "Link-local (RFC 3927)" };
+  if (a === 172 && b >= 16 && b <= 31) return { scope: "private", label: "Private network (RFC 1918)" };
+  if (a === 192 && b === 0 && c === 0) return { scope: "reserved", label: "IETF protocol assignments (RFC 6890)" };
+  if (a === 192 && b === 0 && c === 2) return { scope: "reserved", label: "Documentation range (RFC 5737)" };
+  if (a === 192 && b === 88 && c === 99) return { scope: "reserved", label: "Deprecated 6to4 relay anycast (RFC 7526)" };
+  if (a === 192 && b === 168) return { scope: "private", label: "Private network (RFC 1918)" };
+  if (a === 198 && (b === 18 || b === 19)) return { scope: "reserved", label: "Benchmarking (RFC 2544)" };
+  if (a === 198 && b === 51 && c === 100) return { scope: "reserved", label: "Documentation range (RFC 5737)" };
+  if (a === 203 && b === 0 && c === 113) return { scope: "reserved", label: "Documentation range (RFC 5737)" };
+  if (a >= 224 && a <= 239) return { scope: "reserved", label: "Multicast" };
+  if (a >= 240) return { scope: "reserved", label: "Reserved or broadcast" };
+  return null;
+}
+
+/** Expands a valid IPv6 literal into its eight 16-bit groups. */
+export function expandIpv6(input: string): number[] | null {
+  const value = normalizeIpAddress(input);
+  if (!isValidIpv6(value)) return null;
+  const toGroups = (part: string): number[] => {
+    if (!part) return [];
+    return part.split(":").flatMap((group) => {
+      if (!group.includes(".")) return [parseInt(group, 16)];
+      const [a, b, c, d] = group.split(".").map(Number);
+      return [(a << 8) | b, (c << 8) | d];
+    });
+  };
+  const [left, right] = value.includes("::") ? value.split("::") : [value, undefined];
+  const head = toGroups(left);
+  if (right === undefined) return head;
+  const tail = toGroups(right);
+  return [...head, ...new Array(8 - head.length - tail.length).fill(0), ...tail];
+}
+
+function specialIpv6Range(value: string): SpecialRange | null {
+  const g = expandIpv6(value);
+  if (!g) return null;
+  const allZeroUntil = (index: number) => g.slice(0, index).every((group) => group === 0);
+  if (allZeroUntil(7) && g[7] === 1) return { scope: "loopback", label: "Loopback (this device)" };
+  if (allZeroUntil(8)) return { scope: "reserved", label: "Unspecified address" };
+  if (g[0] === 0x64 && g[1] === 0xff9b && g[2] === 1) return { scope: "reserved", label: "Local-use IPv4/IPv6 translation (RFC 8215)" };
+  if (g[0] === 0x100 && g[1] === 0 && g[2] === 0 && g[3] === 0) return { scope: "reserved", label: "Discard-only block (RFC 6666)" };
+  if (g[0] === 0x100 && g[1] === 0 && g[2] === 0 && g[3] === 1) return { scope: "reserved", label: "Dummy IPv6 prefix (RFC 9780)" };
+  if (g[0] === 0x2001 && g[1] === 0xdb8) return { scope: "reserved", label: "Documentation range (RFC 3849)" };
+  if (g[0] === 0x3fff && g[1] <= 0x0fff) return { scope: "reserved", label: "Documentation range (RFC 9637)" };
+  if ((g[0] & 0xfe00) === 0xfc00) return { scope: "private", label: "Unique local address (RFC 4193)" };
+  if ((g[0] & 0xffc0) === 0xfe80) return { scope: "link-local", label: "Link-local (RFC 4291)" };
+  if ((g[0] & 0xff00) === 0xff00) return { scope: "reserved", label: "Multicast" };
+  return null;
+}
+
+function specialRange(input: string): SpecialRange | null | "invalid" {
+  const value = unwrapIpv4Mapped(input);
   const version = getIpVersion(value);
   if (!version) return "invalid";
+  return version === 4 ? specialIpv4Range(value) : specialIpv6Range(value);
+}
 
-  if (version === 4) {
-    const [first, second, third] = value.split(".").map(Number);
-    if (first === 127) return "loopback";
-    if (first === 169 && second === 254) return "link-local";
-    if (first === 10 || (first === 172 && second >= 16 && second <= 31) || (first === 192 && second === 168)) return "private";
-    if (
-      first === 0 ||
-      first >= 224 ||
-      (first === 100 && second >= 64 && second <= 127) ||
-      (first === 192 && second === 0) ||
-      (first === 192 && second === 0 && third === 2) ||
-      (first === 198 && (second === 18 || second === 19)) ||
-      (first === 198 && second === 51 && third === 100) ||
-      (first === 203 && second === 0 && third === 113)
-    ) return "reserved";
-    return "public";
-  }
+export function classifyIpAddress(input: string): IpScope {
+  const range = specialRange(input);
+  if (range === "invalid") return "invalid";
+  return range?.scope ?? "public";
+}
 
-  if (value === "::1") return "loopback";
-  if (value === "::") return "reserved";
-  if (/^f[cd]/.test(value)) return "private";
-  if (/^fe[89ab]/.test(value)) return "link-local";
-  if (/^ff/.test(value) || /^2001:db8/.test(value)) return "reserved";
-  return "public";
+/** A short human-readable description of a non-public range, or null for public and invalid input. */
+export function describeIpRange(input: string): string | null {
+  const range = specialRange(input);
+  return range && range !== "invalid" ? range.label : null;
 }
 
 export function isPublicIp(input: string): boolean {

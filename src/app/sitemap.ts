@@ -1,29 +1,21 @@
-import { tools } from "@/lib/tools";
-import { blogPosts } from "@/data/blog-posts";
 import type { MetadataRoute } from "next";
+import { blogPosts } from "@/data/blog-posts";
+import { absoluteUrl } from "@/lib/site";
+import { tools } from "@/lib/tools";
+
+// Dates the content of each static page last changed. Update them when a page's text changes.
+export const STATIC_PAGES: { path: string; lastModified: string; priority: number }[] = [
+  { path: "/", lastModified: "2026-10-23", priority: 1 },
+  { path: "/tools", lastModified: "2026-10-23", priority: 0.8 },
+  { path: "/blog", lastModified: "2026-10-23", priority: 0.6 },
+  { path: "/about", lastModified: "2026-10-23", priority: 0.5 },
+  { path: "/privacy-policy", lastModified: "2026-10-23", priority: 0.3 },
+];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://browserprobe.app";
-
-  const staticPages: MetadataRoute.Sitemap = [
-    { url: baseUrl, changeFrequency: "daily", priority: 1.0 },
-    { url: `${baseUrl}/about`, changeFrequency: "monthly", priority: 0.5 },
-    { url: `${baseUrl}/privacy-policy`, changeFrequency: "monthly", priority: 0.3 },
-    { url: `${baseUrl}/blog`, changeFrequency: "weekly", priority: 0.6 },
+  return [
+    ...STATIC_PAGES.map((page) => ({ url: absoluteUrl(page.path), lastModified: page.lastModified, priority: page.priority })),
+    ...tools.map((tool) => ({ url: absoluteUrl(`/tools/${tool.slug}`), lastModified: tool.updated, priority: 0.9 })),
+    ...blogPosts.map((post) => ({ url: absoluteUrl(`/blog/${post.slug}`), lastModified: post.date, priority: 0.7 })),
   ];
-
-  const toolPages: MetadataRoute.Sitemap = tools.map((tool) => ({
-    url: `${baseUrl}/tools/${tool.slug}`,
-    changeFrequency: "weekly" as const,
-    priority: 0.9,
-  }));
-
-  const blogPages: MetadataRoute.Sitemap = blogPosts.map((post) => ({
-    url: `${baseUrl}/blog/${post.slug}`,
-    lastModified: new Date(post.date),
-    changeFrequency: "monthly" as const,
-    priority: 0.7,
-  }));
-
-  return [...staticPages, ...toolPages, ...blogPages];
 }

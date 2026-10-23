@@ -1,4 +1,9 @@
+import { detectWebGL } from "@/lib/detect/webgl";
+
+export const NOT_SUPPORTED = "Not supported in this browser";
+
 export interface HardwareInfo {
+  /** navigator.hardwareConcurrency, or 0 when not exposed. */
   cpuCores: number;
   deviceMemory: string;
   maxTouchPoints: number;
@@ -16,50 +21,46 @@ interface NavigatorWithMemory extends Navigator {
 interface BatteryManager {
   level: number;
   charging: boolean;
-  chargingTime: number;
-  dischargingTime: number;
 }
 
 interface NavigatorWithBattery extends Navigator {
   getBattery?: () => Promise<BatteryManager>;
 }
 
+export function formatDeviceMemory(value: number | undefined): string {
+  if (typeof value !== "number" || !Number.isFinite(value)) return NOT_SUPPORTED;
+  return value < 1 ? `${value * 1024} MB (rounded)` : `${value} GB (rounded)`;
+}
+
 export async function detectHardware(): Promise<HardwareInfo> {
   const nav = navigator as NavigatorWithMemory & NavigatorWithBattery;
 
-  // GPU via WebGL
-  let gpu = "Not available";
+  let gpu = NOT_SUPPORTED;
   try {
-    const canvas = document.createElement("canvas");
-    const gl = canvas.getContext("webgl");
-    if (gl) {
-      const debugInfo = gl.getExtension("WEBGL_debug_renderer_info");
-      if (debugInfo) {
-        gpu = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) || "Hidden";
-      }
-    }
+    const webgl = detectWebGL();
+    if (webgl.supported) gpu = webgl.renderer;
   } catch {
-    // ignore
+    // WebGL can throw when the GPU process is unavailable.
   }
 
-  // Battery
-  let batteryStatus = "Not available";
-  let batteryLevel = "Not available";
-  let batteryCharging = "Not available";
-  try {
-    if (nav.getBattery) {
+  let batteryStatus = NOT_SUPPORTED;
+  let batteryLevel = NOT_SUPPORTED;
+  let batteryCharging = NOT_SUPPORTED;
+  if (typeof nav.getBattery === "function") {
+    try {
       const battery = await nav.getBattery();
       batteryLevel = `${Math.round(battery.level * 100)}%`;
       batteryCharging = battery.charging ? "Charging" : "Not charging";
       batteryStatus = "Available";
+    } catch {
+      batteryStatus = "Blocked by the browser or site policy";
+      batteryLevel = batteryCharging = "Unavailable";
     }
-  } catch {
-    // ignore
   }
 
   return {
     cpuCores: navigator.hardwareConcurrency || 0,
-    deviceMemory: nav.deviceMemory ? `${nav.deviceMemory} GB` : "Not available",
+    deviceMemory: formatDeviceMemory(nav.deviceMemory),
     maxTouchPoints: navigator.maxTouchPoints || 0,
     platform: navigator.platform || "Unknown",
     gpu,

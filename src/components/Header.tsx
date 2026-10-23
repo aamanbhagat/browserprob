@@ -27,12 +27,11 @@ export default function Header() {
         </Link>
 
         <nav id="primary-navigation" className={`${styles.nav} ${menuOpen ? styles.navOpen : ""}`} aria-label="Primary navigation">
-          <Link href="/#report" className={styles.navLink} onClick={closeMenu}>Scan</Link>
-          <Link href="/#tools" className={styles.navLink} onClick={closeMenu}>Tests</Link>
+          <Link href="/tools" className={styles.navLink} onClick={closeMenu}>Tests</Link>
           <Link href="/blog" className={styles.navLink} onClick={closeMenu}>Guides</Link>
-          <Link href="/about" className={styles.navLink} onClick={closeMenu}>Method</Link>
-          <a href="https://github.com/aamanbhagat/browserprob" className={styles.sourceLink} target="_blank" rel="noopener noreferrer" onClick={closeMenu}>Source</a>
-          <Link href="/#report" className={styles.scanButton} onClick={closeMenu}>Run scan</Link>
+          <Link href="/about" className={styles.navLink} onClick={closeMenu}>About</Link>
+          <a href="https://github.com/aamanbhagat/browserprob" className={styles.sourceLink} rel="noopener noreferrer" onClick={closeMenu}>Source</a>
+          <Link href="/#report" className={styles.scanButton} onClick={closeMenu}>Run browser check</Link>
         </nav>
 
         <button

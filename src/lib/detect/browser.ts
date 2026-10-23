@@ -132,3 +132,16 @@ export function detectBrowser(): BrowserInfo {
     mobile: uaData?.mobile ?? parsed.mobile,
   };
 }
+
+/**
+ * Notes about user-agent tokens that browsers freeze or reduce, so readers do not take them literally.
+ * See https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/User-agent_reduction
+ */
+export function describeUaReduction(ua: string): string[] {
+  const notes: string[] = [];
+  if (/Intel Mac OS X 10_15_7/.test(ua)) notes.push("The macOS version is frozen at 10.15.7 in this string, whatever version you actually run.");
+  if (/Windows NT 10\.0/.test(ua)) notes.push("Windows 10 and Windows 11 both report \"Windows NT 10.0\".");
+  if (/Android 10; K\)/.test(ua)) notes.push("\"Android 10; K\" is a fixed placeholder; the real Android version and device model are hidden.");
+  if (/(?:Chrome|CriOS|Edg|EdgA)\/\d+\.0\.0\.0/.test(ua)) notes.push("Minor version numbers are reduced to 0.0.0; only the major version is real.");
+  return notes;
+}

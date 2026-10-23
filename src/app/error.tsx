@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import styles from "./status.module.css";
 
 export default function ErrorPage({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
@@ -10,14 +9,14 @@ export default function ErrorPage({ error, reset }: { error: Error & { digest?: 
   }, [error]);
 
   return (
-    <section className={styles.page}>
-      <div className={styles.card}>
-        <span className={styles.code}>Diagnostic interrupted</span>
+    <section className="status-page">
+      <div className="status-card">
+        <span className="status-code">Diagnostic interrupted</span>
         <h1>The report could not finish.</h1>
         <p>Your browser may have blocked a required API or the page hit an unexpected error. Retry the local checks; no report was saved.</p>
-        <div className={styles.actions}>
-          <button className={styles.primary} type="button" onClick={reset}>Try again</button>
-          <Link className={styles.secondary} href="/">Return home</Link>
+        <div className="status-actions">
+          <button className="status-primary" type="button" onClick={reset}>Try again</button>
+          <Link className="status-secondary" href="/">Return home</Link>
         </div>
       </div>
     </section>

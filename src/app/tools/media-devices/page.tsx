@@ -1,90 +1,14 @@
-"use client";
-import { useState, useEffect } from "react";
-import DataRow from "@/components/DataRow";
-import ToolLoading from "@/components/ToolLoading";
-import RelatedTools from "@/components/RelatedTools";
-import styles from "../tools.module.css";
+import ToolPage, { toolMetadata } from "@/components/tool/ToolPage";
+import Results from "./Results";
 
-export default function MediaDevicesPage() {
-  const [data, setData] = useState<{ supported: boolean; devices: { kind: string; label: string }[] } | null>(null);
-  useEffect(() => {
-    (async () => {
-      if (!navigator.mediaDevices?.enumerateDevices) {
-        setData({ supported: false, devices: [] });
-        return;
-      }
-      try {
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        setData({ supported: true, devices: devices.map(d => ({ kind: d.kind, label: d.label || `${d.kind} (permission required)` })) });
-      } catch {
-        setData({ supported: false, devices: [] });
-      }
-    })();
-  }, []);
-  if (!data) return <ToolLoading title="Media Devices Detection" />;
-  const audioin = data.devices.filter(d => d.kind === "audioinput");
-  const audioout = data.devices.filter(d => d.kind === "audiooutput");
-  const videoin = data.devices.filter(d => d.kind === "videoinput");
-  const schema = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebApplication",
-        "@id": "https://browserprobe.app/tools/media-devices#webapp",
-        "name": "Media Devices Detection",
-        "url": "https://browserprobe.app/tools/media-devices",
-        "description": "Detect available media devices (cameras, microphones, speakers) in your browser without accessing them.",
-        "applicationCategory": "UtilityApplication",
-        "operatingSystem": "Any"
-      },
-      {
-        "@type": "FAQPage",
-        "@id": "https://browserprobe.app/tools/media-devices#faq",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "Can websites access my camera and microphone without permission?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Modern browsers require permission before a site can capture camera or microphone streams. Device enumeration may return device kinds and placeholder entries before permission; labels and stable identifiers are normally restricted."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "How is media device listing used for browser fingerprinting?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Available device kinds and counts may contribute to a broader browser fingerprint. Labels and identifiers are restricted until permission in modern browsers, and the result alone does not prove identity."
-            }
-          }
-        ]
-      }
-    ]
-  };
+const slug = "media-devices";
 
+export const metadata = toolMetadata(slug);
+
+export default function Page() {
   return (
-    <div className={styles.toolPage}>
-      <div className="container">
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }}
-        />
-      <div className={styles.header}><span className={styles.icon}>📹</span><h1 className={styles.title}>Media Devices Detection</h1><p className={styles.subtitle}>Check available cameras, microphones, and audio output devices.</p></div>
-      <div className={styles.resultsCard}>
-        <div className={styles.resultsHeader}><span className={styles.resultsTitle}>Media Devices</span><span className={styles.statusDot} /></div>
-        <DataRow label="MediaDevices API" value={data.supported} />
-        <DataRow label="Total Devices" value={data.devices.length} />
-        <DataRow label="Microphones" value={audioin.length} />
-        <DataRow label="Speakers" value={audioout.length} />
-        <DataRow label="Cameras" value={videoin.length} />
-        {data.devices.map((d, i) => <DataRow key={i} label={d.kind} value={d.label} />)}
-      </div>
-      <div className={styles.explainer}>
-        <h2 className={styles.explainerTitle}>What This Means</h2>
-        <p className={styles.explainerText}>The <strong>MediaDevices API</strong> allows websites to enumerate available audio/video devices without requesting permission to use them. The number and types of devices can contribute to your browser fingerprint.</p>
-        <p className={styles.explainerText}>Device labels are normally revealed only after permission. Before permission, generic entries may still show available kinds and counts. These can contribute to a broader fingerprint but do not identify you by themselves.</p>
-      </div>
-      <RelatedTools currentSlug="media-devices" />
-    </div></div>
+    <ToolPage slug={slug}>
+      <Results />
+    </ToolPage>
   );
 }
