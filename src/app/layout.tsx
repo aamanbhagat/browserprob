@@ -1,6 +1,19 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
+import Script from "next/script";
+import { Atkinson_Hyperlegible, IBM_Plex_Mono, Schibsted_Grotesk } from "next/font/google";
 import "./globals.css";
-import SiteChrome from "@/components/SiteChrome";
+import Footer from "@/components/Footer";
+import Header from "@/components/Header";
+import ServiceWorkerCleanup from "@/components/ServiceWorkerCleanup";
+import { ADS_ENABLED, ADSENSE_CLIENT, ADSENSE_SCRIPT_SRC } from "@/lib/ads";
+
+const displayFace = Schibsted_Grotesk({ subsets: ["latin"], weight: ["700", "800"], variable: "--font-display-face", display: "swap" });
+// Atkinson Hyperlegible was designed for low-vision readability; next/font has fallback metrics for it, so the
+// swap from the system font does not shift the layout.
+const bodyFace = Atkinson_Hyperlegible({ subsets: ["latin"], weight: ["400", "700"], variable: "--font-body-face", display: "swap" });
+// Labels and values only; not needed for the first paint, so it is not preloaded.
+const monoFace = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "600"], variable: "--font-mono-face", display: "swap", preload: false });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://browserprobe.app"),
@@ -42,6 +55,8 @@ export const metadata: Metadata = {
     description:
       "Generate a clear browser diagnostic report with evidence-based privacy, IP, fingerprinting, screen, storage, and feature checks.",
   },
+  // Google's AdSense site-ownership tag. It loads nothing; ads only load when NEXT_PUBLIC_ADS_ENABLED is set.
+  other: { "google-adsense-account": ADSENSE_CLIENT },
   robots: {
     index: true,
     follow: true,
@@ -55,11 +70,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Reading request headers makes every page dynamic, which nonce-based CSP requires; without ads the
+  // pages stay static.
+  const nonce = ADS_ENABLED ? ((await headers()).get("x-nonce") ?? undefined) : undefined;
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
@@ -77,80 +96,22 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en">
+    <html lang="en" className={`${displayFace.variable} ${bodyFace.variable} ${monoFace.variable}`}>
       <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
         />
-        <script
-          id="chrome-load-times-compat"
-          dangerouslySetInnerHTML={{
-            __html: `(() => {
-              const chromeApi = window.chrome;
-              if (!chromeApi || typeof chromeApi.loadTimes !== "function") return;
-              const toEpochSeconds = (milliseconds) =>
-                (performance.timeOrigin + milliseconds) / 1000;
-              Object.defineProperty(chromeApi, "loadTimes", {
-                configurable: true,
-                value: () => {
-                  const navigation = performance.getEntriesByType("navigation")[0];
-                  const paint = performance.getEntriesByName("first-paint")[0];
-                  const protocol = navigation?.nextHopProtocol || "";
-                  return {
-                    requestTime: toEpochSeconds(navigation?.requestStart || 0),
-                    startLoadTime: toEpochSeconds(navigation?.startTime || 0),
-                    commitLoadTime: toEpochSeconds(navigation?.responseStart || 0),
-                    finishDocumentLoadTime: toEpochSeconds(navigation?.domContentLoadedEventEnd || 0),
-                    finishLoadTime: toEpochSeconds(navigation?.loadEventEnd || performance.now()),
-                    firstPaintTime: toEpochSeconds(paint?.startTime || navigation?.responseEnd || 0),
-                    firstPaintAfterLoadTime: 0,
-                    navigationType: navigation?.type || "navigate",
-                    wasFetchedViaSpdy: protocol === "h2" || protocol === "h3",
-                    wasNpnNegotiated: Boolean(protocol),
-                    npnNegotiatedProtocol: protocol,
-                    wasAlternateProtocolAvailable: false,
-                    connectionInfo: protocol,
-                  };
-                },
-              });
-            })();`,
-          }}
-        />
-        <script
-          id="browserprobe-monetization-loader"
-          dangerouslySetInnerHTML={{
-            __html: `(() => {
-              const loadTag = () => {
-                if (document.querySelector('script[data-zone="273538"][src="https://quge5.com/88/tag.min.js"]')) return;
-                const tag = document.createElement("script");
-                tag.src = "https://quge5.com/88/tag.min.js";
-                tag.dataset.zone = "273538";
-                tag.async = true;
-                tag.fetchPriority = "low";
-                tag.setAttribute("data-cfasync", "false");
-                document.head.appendChild(tag);
-              };
-              const scheduleTag = () => {
-                setTimeout(() => {
-                  if ("requestIdleCallback" in window) {
-                    window.requestIdleCallback(loadTag, { timeout: 2000 });
-                    return;
-                  }
-                  loadTag();
-                }, 1500);
-              };
-              if (document.readyState === "complete") scheduleTag();
-              else window.addEventListener("load", scheduleTag, { once: true });
-            })();`,
-          }}
-        />
       </head>
       <body>
         <a href="#main-content" className="skipLink">Skip to content</a>
-        <SiteChrome position="header" />
+        <Header />
         <main id="main-content">{children}</main>
-        <SiteChrome position="footer" />
+        <Footer />
+        <ServiceWorkerCleanup />
+        {ADS_ENABLED && (
+          <Script id="adsense-loader" src={ADSENSE_SCRIPT_SRC} strategy="afterInteractive" crossOrigin="anonymous" nonce={nonce} />
+        )}
       </body>
     </html>
   );

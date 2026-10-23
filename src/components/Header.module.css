@@ -5,39 +5,116 @@
   height: var(--header-height);
   display: flex;
   align-items: center;
-  background: rgba(255, 255, 255, 0.96);
+  background: var(--header-bg);
   border-bottom: 1px solid var(--border-subtle);
+  backdrop-filter: saturate(140%) blur(10px);
 }
 
-.inner { display: flex; align-items: center; justify-content: space-between; height: 100%; }
-.logo { display: inline-flex; align-items: center; gap: 10px; color: var(--text-primary); font-size: 1.04rem; font-weight: 800; letter-spacing: -0.025em; }
+.inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 100%; }
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: 1.12rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
 .logo:hover { color: var(--text-primary); }
-.logoMark { width: 30px; height: 30px; display: grid; place-items: center; position: relative; border: 2px solid var(--accent-blue); border-radius: 50%; }
-.logoMark::before { content: ""; position: absolute; inset: 5px; border: 1px solid var(--accent-blue); border-radius: 50%; }
-.logoMark i { position: absolute; width: 2px; background: var(--paper); }
-.logoMark i:nth-child(1) { height: 34px; transform: rotate(90deg); }
-.logoMark i:nth-child(2) { height: 34px; transform: rotate(30deg); }
-.logoMark i:nth-child(3) { height: 34px; transform: rotate(-30deg); }
 
-.nav { display: flex; align-items: center; gap: 28px; }
-.navLink, .sourceLink { color: var(--text-secondary); font-size: 0.78rem; font-weight: 700; }
-.navLink:hover, .sourceLink:hover { color: var(--accent-blue); }
-.sourceLink::after { content: " ↗"; font-family: var(--font-mono), monospace; font-size: 0.62rem; }
-.scanButton { padding: 9px 15px; background: var(--accent-blue); border-radius: var(--radius-sm); color: white; font-size: 0.76rem; font-weight: 800; }
-.scanButton:hover { background: var(--accent-blue-dark); color: white; }
+/* A probe reading: a ring with a measurement tick. */
+.logoMark {
+  position: relative;
+  width: 26px;
+  height: 26px;
+  border: 2px solid var(--text-primary);
+  border-radius: 50%;
+}
 
-.hamburger { display: none; width: 40px; height: 40px; place-items: center; position: relative; z-index: 103; }
+.logoMark::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  background: var(--signal);
+  border-radius: 50%;
+}
+
+.logoMark::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 1px);
+  width: 7px;
+  height: 2px;
+  background: var(--text-primary);
+}
+
+.nav { display: flex; align-items: center; gap: 6px; }
+
+.navLink,
+.sourceLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.navLink:hover,
+.sourceLink:hover { color: var(--text-primary); background: var(--bg-secondary); }
+
+.sourceLink::after { content: "↗"; margin-left: 4px; font-size: 0.8em; }
+
+.scanButton {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-left: 8px;
+  padding: 0 16px;
+  background: var(--signal);
+  border-radius: var(--radius-sm);
+  color: var(--on-signal);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.scanButton:hover { background: var(--signal-strong); color: var(--on-signal); }
+
+.hamburger { display: none; width: 44px; height: 44px; place-items: center; position: relative; z-index: 103; border-radius: var(--radius-sm); }
 .hamburger span { position: absolute; width: 22px; height: 2px; background: var(--text-primary); transition: transform var(--transition-base), opacity var(--transition-base); }
 .hamburger span:nth-child(1) { transform: translateY(-7px); }
 .hamburger span:nth-child(3) { transform: translateY(7px); }
-.backdrop { position: fixed; inset: var(--header-height) 0 0; z-index: 99; background: rgba(16, 35, 61, 0.28); }
+.backdrop { position: fixed; inset: var(--header-height) 0 0; z-index: 99; background: var(--scrim); }
 
-@media (max-width: 760px) {
+@media (max-width: 820px) {
   .hamburger { display: grid; }
-  .nav { position: fixed; top: var(--header-height); right: 0; z-index: 102; width: min(86vw, 320px); height: calc(100dvh - var(--header-height)); padding: 38px 28px; flex-direction: column; align-items: stretch; gap: 8px; background: var(--paper); border-left: 1px solid var(--border-subtle); transform: translateX(102%); transition: transform var(--transition-base); }
-  .navOpen { transform: translateX(0); }
-  .navLink, .sourceLink { padding: 11px 6px; font-size: 1rem; }
-  .scanButton { margin-top: 14px; padding: 12px 16px; text-align: center; }
+  .nav {
+    position: fixed;
+    top: var(--header-height);
+    right: 0;
+    z-index: 102;
+    width: min(86vw, 320px);
+    height: calc(100dvh - var(--header-height));
+    padding: 24px 20px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    background: var(--paper);
+    border-left: 1px solid var(--border-subtle);
+    transform: translateX(102%);
+    visibility: hidden;
+    transition: transform var(--transition-base), visibility 0s linear var(--transition-base);
+  }
+  .navOpen { transform: translateX(0); visibility: visible; transition: transform var(--transition-base); }
+  .navLink, .sourceLink { font-size: 1.05rem; }
+  .scanButton { justify-content: center; margin: 12px 0 0; }
   .hamburger[aria-expanded="true"] span:nth-child(1) { transform: rotate(45deg); }
   .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
   .hamburger[aria-expanded="true"] span:nth-child(3) { transform: rotate(-45deg); }

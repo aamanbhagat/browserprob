@@ -1,37 +1,42 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "BrowserProbe diagnostic passport — browser facts, findings, and limits";
+export const alt = "BrowserProbe: see what your browser tells every website";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
+const READINGS = [
+  ["Browser and version", "User-agent, Client Hints"],
+  ["IP address", "Your request"],
+  ["WebRTC addresses", "STUN"],
+  ["Canvas and audio", "Rendering samples"],
+  ["Screen and fonts", "Sizes, text metrics"],
+];
+
 export default function OpenGraphImage() {
   return new ImageResponse(
-    <div style={{ width: "100%", height: "100%", display: "flex", padding: "54px", background: "#eef3f8", color: "#10233d", fontFamily: "Arial, sans-serif" }}>
-      <div style={{ width: "100%", display: "flex", flexDirection: "column", background: "#ffffff", border: "2px solid #c4d0de", borderTop: "10px solid #2458e8", borderRadius: "16px", padding: "42px 48px" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "18px", fontSize: "28px", fontWeight: 800 }}>
-            <div style={{ width: "58px", height: "58px", display: "flex", alignItems: "center", justifyContent: "center", border: "3px solid #2458e8", borderRadius: "50%", color: "#2458e8", fontSize: "19px" }}>BP</div>
-            BrowserProbe
+    <div style={{ width: "100%", height: "100%", display: "flex", padding: "56px", background: "#f3f5f7", color: "#101820", fontFamily: "Arial, sans-serif" }}>
+      <div style={{ width: "58%", display: "flex", flexDirection: "column", justifyContent: "space-between", paddingRight: "40px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "16px", fontSize: "32px", fontWeight: 800 }}>
+          <div style={{ width: "40px", height: "40px", display: "flex", alignItems: "center", justifyContent: "center", border: "4px solid #101820", borderRadius: "50%" }}>
+            <div style={{ width: "16px", height: "16px", background: "#0b6b66", borderRadius: "50%" }} />
           </div>
-          <div style={{ color: "#2458e8", fontSize: "18px", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" }}>Diagnostic passport</div>
+          BrowserProbe
         </div>
-        <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "space-between", gap: "42px" }}>
-          <div style={{ width: "68%", display: "flex", flexDirection: "column" }}>
-            <div style={{ color: "#2458e8", fontFamily: "monospace", fontSize: "18px", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" }}>Instant browser inspection</div>
-            <div style={{ display: "flex", flexDirection: "column", marginTop: "16px", fontSize: "68px", fontWeight: 800, letterSpacing: "-0.055em", lineHeight: 0.98 }}><span>Your browser,</span><span>explained.</span></div>
-            <div style={{ marginTop: "24px", color: "#465a70", fontSize: "24px", lineHeight: 1.4 }}>Clear browser facts, evidence-based privacy findings, and honest limitations.</div>
+        <div style={{ display: "flex", flexDirection: "column", fontSize: "70px", fontWeight: 800, letterSpacing: "-0.04em", lineHeight: 1 }}>
+          <span>See what your</span>
+          <span>browser tells</span>
+          <span>every website.</span>
+        </div>
+        <div style={{ color: "#3b4956", fontSize: "24px" }}>Free browser tests, with the limits of each result explained.</div>
+      </div>
+      <div style={{ width: "42%", display: "flex", flexDirection: "column", background: "#ffffff", border: "2px solid #dbe1e7", borderTop: "6px solid #101820", borderRadius: "12px" }}>
+        <div style={{ display: "flex", padding: "20px 24px", color: "#0b6b66", fontFamily: "monospace", fontSize: "18px", fontWeight: 700, letterSpacing: "0.08em" }}>WHAT THE CHECK READS</div>
+        {READINGS.map(([what, source]) => (
+          <div key={what} style={{ display: "flex", flexDirection: "column", padding: "14px 24px", borderTop: "2px solid #dbe1e7" }}>
+            <span style={{ fontSize: "24px", fontWeight: 700 }}>{what}</span>
+            <span style={{ color: "#55626f", fontFamily: "monospace", fontSize: "18px" }}>{source}</span>
           </div>
-          <div style={{ width: "32%", display: "flex", flexDirection: "column", border: "2px solid #dce4ee", borderRadius: "10px" }}>
-            {["Observed facts", "Confidence labels", "No app report database"].map((label, index) => (
-              <div key={label} style={{ display: "flex", alignItems: "center", gap: "14px", padding: "20px", borderBottom: index < 2 ? "2px solid #dce4ee" : "none", fontSize: "20px", fontWeight: 700 }}>
-                <span style={{ color: index === 1 ? "#b84b22" : "#0e7068" }}>0{index + 1}</span>{label}
-              </div>
-            ))}
-          </div>
-        </div>
-        <div style={{ display: "flex", justifyContent: "space-between", paddingTop: "20px", borderTop: "2px solid #dce4ee", color: "#5d6d82", fontFamily: "monospace", fontSize: "17px" }}>
-          <span>browserprobe.app</span><span>Facts · findings · limits</span>
-        </div>
+        ))}
       </div>
     </div>,
     size,

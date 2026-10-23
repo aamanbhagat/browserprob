@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { classifyIpAddress, getIpVersion, isValidIpv4, isValidIpv6, normalizeIpAddress } from "./ip";
+import { classifyIpAddress, describeIpRange, expandIpv6, getIpVersion, isValidIpv4, isValidIpv6, normalizeIpAddress, unwrapIpv4Mapped } from "./ip";
 
 describe("normalizeIpAddress", () => {
   it.each([
@@ -46,5 +46,48 @@ describe("IP scope classification", () => {
     ["ff02::1", "reserved"], ["2001:db8::1", "reserved"], ["bad", "invalid"],
   ] as const)("classifies %s as %s", (value, expected) => {
     expect(classifyIpAddress(value)).toBe(expected);
+  });
+});
+
+describe("unwrapIpv4Mapped", () => {
+  it.each([
+    ["::ffff:127.0.0.1", "127.0.0.1"],
+    ["::FFFF:203.0.113.7", "203.0.113.7"],
+    ["0:0:0:0:0:ffff:192.0.2.1", "192.0.2.1"],
+    ["::ffff:7f00:1", "127.0.0.1"],
+    ["[::ffff:10.1.2.3]:443", "10.1.2.3"],
+    ["2001:db8::1", "2001:db8::1"],
+    ["8.8.8.8", "8.8.8.8"],
+  ])("unwraps %s", (input, expected) => expect(unwrapIpv4Mapped(input)).toBe(expected));
+});
+
+describe("expandIpv6", () => {
+  it("expands compressed and embedded-IPv4 forms", () => {
+    expect(expandIpv6("2001:db8::1")).toEqual([0x2001, 0xdb8, 0, 0, 0, 0, 0, 1]);
+    expect(expandIpv6("::ffff:192.0.2.1")).toEqual([0, 0, 0, 0, 0, 0xffff, 0xc000, 0x0201]);
+    expect(expandIpv6("::")).toEqual([0, 0, 0, 0, 0, 0, 0, 0]);
+  });
+  it("rejects invalid input", () => expect(expandIpv6("1.2.3.4")).toBeNull());
+});
+
+// Ranges from the IANA IPv4 and IPv6 Special-Purpose Address Registries.
+describe("classification against the IANA special-purpose registries", () => {
+  it.each([
+    ["192.0.1.1", "public"], // only 192.0.0.0/24 and 192.0.2.0/24 are special, not all of 192.0.0.0/16
+    ["192.0.0.8", "reserved"], ["192.0.2.200", "reserved"], ["192.88.99.1", "reserved"],
+    ["0.1.2.3", "reserved"], ["240.0.0.1", "reserved"], ["198.19.255.1", "reserved"], ["198.20.0.1", "public"],
+    ["100.63.255.255", "public"], ["100.128.0.1", "public"],
+    ["::ffff:127.0.0.1", "loopback"], ["::ffff:192.168.0.10", "private"], ["::ffff:8.8.8.8", "public"],
+    ["3fff::1", "reserved"], ["3fff:fff::1", "reserved"], ["3fff:1000::1", "public"],
+    ["100::1", "reserved"], ["100:0:0:1::1", "reserved"], ["64:ff9b:1::1", "reserved"], ["64:ff9b::808:808", "public"],
+    ["fe80::abcd", "link-local"], ["febf::1", "link-local"], ["fec0::1", "public"],
+  ] as const)("classifies %s as %s", (value, expected) => expect(classifyIpAddress(value)).toBe(expected));
+
+  it("describes non-public ranges and returns null for public ones", () => {
+    expect(describeIpRange("100.64.1.1")).toBe("Carrier-grade NAT shared space (RFC 6598)");
+    expect(describeIpRange("::ffff:127.0.0.1")).toBe("Loopback (this device)");
+    expect(describeIpRange("2001:db8::5")).toBe("Documentation range (RFC 3849)");
+    expect(describeIpRange("8.8.8.8")).toBeNull();
+    expect(describeIpRange("not an ip")).toBeNull();
   });
 });

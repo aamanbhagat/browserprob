@@ -1,10 +1,203 @@
-.homePage {
-  min-height: 100vh;
-  background:
-    radial-gradient(circle at 54% 8%, rgba(67, 126, 255, 0.07), transparent 26rem),
-    #f8fbff;
+.home {
+  padding-bottom: 80px;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 32px;
+  padding-top: 40px;
+  padding-bottom: 32px;
+}
+
+.heroText {
+  min-width: 0;
+}
+
+.eyebrow {
+  margin-bottom: 14px;
+  color: var(--signal);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.title {
+  max-width: 14ch;
+  margin-bottom: 18px;
+  color: var(--text-primary);
+  font-size: clamp(2.4rem, 6.4vw, 4.6rem);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 0.98;
+}
+
+.intro {
+  max-width: 62ch;
+  margin-bottom: 24px;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  line-height: 1.65;
+}
+
+.scan {
+  scroll-margin-top: 96px;
+}
+
+/* The signature: a ledger of exactly what the check reads and where each value comes from. */
+.ledger {
+  align-self: start;
+  background: var(--paper);
+  border: 1px solid var(--border-subtle);
+  border-top: 3px solid var(--text-primary);
+  border-radius: var(--radius-md);
+}
+
+.ledgerTitle {
+  padding: 14px 16px 10px;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ledgerList {
+  counter-reset: reading;
+}
+
+.ledgerRow {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2px;
+  padding: 10px 16px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.ledgerRow dt {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.ledgerRow dd {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+}
+
+.section {
+  padding-top: 48px;
+}
+
+.sectionTitle {
+  margin-bottom: 8px;
+  color: var(--text-primary);
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  letter-spacing: -0.03em;
+}
+
+.sectionIntro {
+  margin-bottom: 24px;
+  color: var(--text-secondary);
+}
+
+.category + .category {
+  margin-top: 28px;
+}
+
+.categoryTitle {
+  margin-bottom: 12px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px 32px;
+  margin-top: 16px;
+}
+
+.columns p,
+.faq p {
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+.columnTitle,
+.faq h3 {
+  margin-bottom: 6px;
+  color: var(--text-primary);
+  font-size: 1.12rem;
+}
+
+.faq {
+  max-width: 760px;
+  margin-top: 16px;
+}
+
+.faq h3:not(:first-child) {
+  margin-top: 20px;
+}
+
+.faq a,
+.columns a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.guides {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin: 20px 0;
+  list-style: none;
+}
+
+.guides a {
+  color: var(--text-primary);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: var(--border-medium);
+  text-underline-offset: 4px;
+}
+
+.guides a:hover {
+  color: var(--signal);
+  text-decoration-color: currentColor;
+}
+
+.guides p {
+  margin-top: 6px;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.allLink {
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (min-width: 960px) {
+  .hero {
+    grid-template-columns: minmax(0, 1.55fr) minmax(300px, 1fr);
+    gap: 48px;
+    padding-top: 56px;
+  }
 }
 
 @media print {
-  .homePage { background: white; }
+  .section,
+  .ledger {
+    display: none;
+  }
 }

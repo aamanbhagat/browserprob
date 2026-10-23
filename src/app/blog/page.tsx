@@ -1,106 +1,47 @@
-import Link from "next/link";
-import { blogPosts } from "@/data/blog-posts";
 import type { Metadata } from "next";
+import Link from "next/link";
+import { BLOG_CATEGORIES, blogPosts } from "@/data/blog-posts";
+import { absoluteUrl, formatDate } from "@/lib/site";
 import styles from "./blog.module.css";
 
 export const metadata: Metadata = {
-  title: "Browser Privacy & Security Guides",
-  description: "Deep dives into browser fingerprinting, WebRTC leaks, canvas tracking, privacy headers, and hardware exposure. Read expert security analyses and guides.",
-  alternates: { canonical: "https://browserprobe.app/blog" },
+  title: "Guides to Browser Privacy and Diagnostics",
+  description: "Plain-language guides to browser fingerprinting, WebRTC leaks, IP addresses, cookies and storage, Client Hints, GPU and screen signals, with sources for every claim.",
+  alternates: { canonical: absoluteUrl("/blog") },
 };
 
-export default async function BlogPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ category?: string }>;
-}) {
-  const { category } = await searchParams;
-  const activeCategory = category?.trim() || "";
-
-  const filteredPosts = activeCategory
-    ? blogPosts.filter(
-        (post) => post.category.toLowerCase() === activeCategory.toLowerCase()
-      )
-    : blogPosts;
-
-  const categories = ["All", "Tracking", "Security", "Privacy", "Identity"];
-
+export default function BlogIndexPage() {
   return (
-    <div className={styles.blogPage}>
-      <div className="container">
-        <div className={styles.header}>
-          <div className={styles.eyebrow}>Diagnostics & Research</div>
-          <h1 className={styles.title}>The Privacy Lab</h1>
-          <p className={styles.subtitle}>
-            In-depth technical papers, browser fingerprinting breakdowns, and privacy mitigation guides.
-          </p>
-        </div>
+    <div className={`container ${styles.indexPage}`}>
+      <header className={styles.indexHeader}>
+        <h1 className={styles.indexTitle}>Guides</h1>
+        <p className={styles.indexIntro}>
+          Longer explanations of what browsers reveal to websites and what you can do about it. Each guide links to the
+          test that shows the values in your own browser, and lists the specifications and documentation it relies on.
+        </p>
+      </header>
 
-        {/* Category Filter Pills */}
-        <div className={styles.filterBar}>
-          {categories.map((cat) => {
-            const isAll = cat === "All";
-            const isActive = isAll ? !activeCategory : activeCategory.toLowerCase() === cat.toLowerCase();
-            const href = isAll ? "/blog" : `/blog?category=${cat.toLowerCase()}`;
-
-            return (
-              <Link
-                key={cat}
-                href={href}
-                className={`${styles.filterPill} ${isActive ? styles.activePill : ""}`}
-              >
-                {cat}
-                {isAll ? (
-                  <span className={styles.pillCount}>{blogPosts.length}</span>
-                ) : (
-                  <span className={styles.pillCount}>
-                    {blogPosts.filter((p) => p.category === cat).length}
-                  </span>
-                )}
-              </Link>
-            );
-          })}
-        </div>
-
-        {/* Blog Post Cards Grid */}
-        {filteredPosts.length > 0 ? (
-          <div className={styles.grid}>
-            {filteredPosts.map((post) => (
-              <article key={post.slug} className={styles.card}>
-                <Link href={`/blog/${post.slug}`} className={styles.cardLink}>
-                  <div className={styles.cardMeta}>
-                    <span className={`${styles.categoryBadge} ${styles[post.category.toLowerCase()]}`}>
-                      {post.category}
-                    </span>
-                    <time dateTime={post.date}>
-                      {new Date(post.date).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                    </time>
-                    <span>·</span>
-                    <span>{post.readTime}</span>
-                  </div>
-                  <h2 className={styles.cardTitle}>{post.title}</h2>
-                  <p className={styles.excerpt}>{post.excerpt}</p>
-                  <div className={styles.cardFooter}>
-                    <span className={styles.readMore}>Read technical paper</span>
-                    <span className={styles.arrow}>→</span>
-                  </div>
-                </Link>
-              </article>
-            ))}
-          </div>
-        ) : (
-          <div className={styles.emptyState}>
-            <p>No articles found in this category.</p>
-            <Link href="/blog" className={styles.resetBtn}>
-              Show all papers
-            </Link>
-          </div>
-        )}
-      </div>
+      {BLOG_CATEGORIES.map((category) => {
+        const posts = blogPosts.filter((post) => post.category === category);
+        if (posts.length === 0) return null;
+        const headingId = `cat-${category.toLowerCase().replace(/\W+/g, "-")}`;
+        return (
+          <section key={category} className={styles.categoryBlock} aria-labelledby={headingId}>
+            <h2 id={headingId} className={styles.categoryTitle}>{category}</h2>
+            <ul className={styles.postList}>
+              {posts.map((post) => (
+                <li key={post.slug} className={styles.postItem}>
+                  <Link href={`/blog/${post.slug}`} className={styles.postLink}>{post.title}</Link>
+                  <p className={styles.postExcerpt}>{post.excerpt}</p>
+                  <p className={styles.postMeta}>
+                    Updated <time dateTime={post.updated}>{formatDate(post.updated)}</time> · {post.readTime}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </section>
+        );
+      })}
     </div>
   );
 }

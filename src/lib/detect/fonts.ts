@@ -1,4 +1,4 @@
-const TEST_FONTS = [
+export const TEST_FONTS = [
   "Arial", "Arial Black", "Calibri", "Cambria", "Century Gothic",
   "Comic Sans MS", "Consolas", "Courier New", "Georgia", "Helvetica",
   "Impact", "Lucida Console", "Lucida Sans Unicode", "Monaco",

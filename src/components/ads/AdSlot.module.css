@@ -1,0 +1,24 @@
+/* Kept well clear of surrounding controls so the ad cannot be confused with page content or
+   tapped by accident. */
+.slot {
+  margin: 40px 0;
+  padding: 10px 0 0;
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  contain: layout;
+}
+
+.label {
+  margin-bottom: 8px;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@media print {
+  .slot {
+    display: none;
+  }
+}

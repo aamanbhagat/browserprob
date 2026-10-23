@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { canonicalizeTimezone, formatUtcOffset } from "./timezone";
+import { canonicalizeTimezone, compareTimezones, formatUtcOffset, utcOffsetMinutes } from "./timezone";
 
 const offsets: Array<[number, string]> = [
   [720, "UTC-12:00"], [660, "UTC-11:00"], [600, "UTC-10:00"], [570, "UTC-09:30"],
@@ -35,4 +35,19 @@ describe("canonicalizeTimezone", () => {
   ])("canonicalizes %s", (input, expected) => {
     expect(canonicalizeTimezone(input)).toBe(expected);
   });
+});
+
+describe("utcOffsetMinutes and compareTimezones", () => {
+  const winter = new Date("2026-01-15T12:00:00Z");
+  const summer = new Date("2026-07-15T12:00:00Z");
+
+  it.each([
+    ["UTC", winter, 0], ["Asia/Kolkata", winter, 330], ["America/New_York", winter, -300], ["America/New_York", summer, -240],
+    ["Asia/Kathmandu", summer, 345], ["Not/AZone", winter, null],
+  ] as const)("offset of %s", (zone, at, expected) => expect(utcOffsetMinutes(zone, at)).toBe(expected));
+
+  it("matches aliases of the same zone", () => expect(compareTimezones("Asia/Calcutta", "Asia/Kolkata", winter)).toBe("same-zone"));
+  it("notices zones that share an offset", () => expect(compareTimezones("Europe/Paris", "Europe/Berlin", winter)).toBe("same-offset"));
+  it("flags a different offset", () => expect(compareTimezones("Asia/Kolkata", "America/New_York", winter)).toBe("different"));
+  it("returns unknown without an IP zone", () => expect(compareTimezones("Asia/Kolkata", null)).toBe("unknown"));
 });

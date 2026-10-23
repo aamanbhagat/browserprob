@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseBrowserClientHints, parseBrowserUserAgent } from "./browser";
+import { describeUaReduction, parseBrowserClientHints, parseBrowserUserAgent } from "./browser";
 
 const userAgents: Array<[string, string, string, boolean]> = [
   ["Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126.0.0.0 Safari/537.36", "Chrome", "Blink", false],
@@ -59,5 +59,20 @@ describe("parseBrowserClientHints", () => {
 
   it("normalizes the Microsoft Edge brand", () => {
     expect(parseBrowserClientHints({ brands: [{ brand: "Microsoft Edge", version: "150" }] })).toEqual({ name: "Microsoft Edge", version: "150" });
+  });
+});
+
+describe("describeUaReduction", () => {
+  it("explains the frozen macOS token and zeroed Chrome version", () => {
+    const notes = describeUaReduction("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36");
+    expect(notes).toHaveLength(2);
+    expect(notes[0]).toContain("10.15.7");
+    expect(notes[1]).toContain("0.0.0");
+  });
+  it("explains the Android placeholder", () => {
+    expect(describeUaReduction("Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36").join(" ")).toContain("Android 10; K");
+  });
+  it("says nothing about an unreduced Firefox string", () => {
+    expect(describeUaReduction("Mozilla/5.0 (X11; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0")).toEqual([]);
   });
 });

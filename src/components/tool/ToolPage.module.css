@@ -1,0 +1,140 @@
+.page {
+  padding: 28px 0 80px;
+}
+
+.inner {
+  max-width: 980px;
+}
+
+.breadcrumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 28px;
+  list-style: none;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.breadcrumb li + li::before {
+  content: "/";
+  margin-right: 6px;
+  color: var(--border-medium);
+}
+
+.breadcrumb a {
+  color: var(--text-secondary);
+}
+
+.header {
+  max-width: 760px;
+  margin-bottom: 28px;
+}
+
+.eyebrow {
+  margin-bottom: 10px;
+  color: var(--accent-blue);
+  font-family: var(--font-mono), monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin-bottom: 14px;
+  color: var(--text-primary);
+  font-size: clamp(2.1rem, 5vw, 3.6rem);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 1.02;
+}
+
+.lead {
+  max-width: 640px;
+  color: var(--text-secondary);
+  font-size: 1.08rem;
+  line-height: 1.6;
+}
+
+.results {
+  min-height: var(--reserve-sm, 0);
+  margin-bottom: var(--space-2xl);
+}
+
+@media (min-width: 768px) {
+  .results {
+    min-height: var(--reserve-lg, 0);
+  }
+}
+
+.noscript {
+  padding: var(--space-md) var(--space-lg);
+  background: var(--paper);
+  border: 1px solid var(--border-medium);
+  border-left: 4px solid var(--accent-orange);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+}
+
+.body {
+  max-width: 720px;
+}
+
+.section {
+  margin-bottom: var(--space-2xl);
+}
+
+.sectionTitle {
+  margin-bottom: var(--space-md);
+  color: var(--text-primary);
+  font-size: 1.55rem;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.faq {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.faqItem {
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.faqQuestion {
+  margin-bottom: 6px;
+  color: var(--text-primary);
+  font-size: 1.05rem;
+  line-height: 1.35;
+}
+
+.faqAnswer {
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.sources {
+  padding-left: 1.2em;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.sources a {
+  color: var(--accent-blue);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+
+.reviewed {
+  margin-bottom: var(--space-2xl);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.reviewed a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

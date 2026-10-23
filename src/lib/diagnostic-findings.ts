@@ -102,8 +102,8 @@ export function buildDiagnosticFindings(input: FindingInput): DiagnosticFinding[
     findings.push({
       id: "fingerprint",
       title: `${surfaces[0]?.toUpperCase() || "F"}${surfaces.slice(1)} fingerprint surfaces are available`,
-      summary: "Availability increases the signals a site can compare, but does not prove that your browser is uniquely identifiable.",
-      status: "review",
+      summary: "Almost every browser exposes these. They add signals a site can compare, but do not show that your browser is uniquely identifiable.",
+      status: "info",
       source: "Canvas + Audio APIs",
       confidence: "Medium",
       href: "/tools/canvas-fingerprint",

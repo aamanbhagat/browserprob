@@ -9,27 +9,28 @@ interface CodeBlockProps {
 }
 
 export default function CodeBlock({ code, language }: CodeBlockProps) {
-  const [copied, setCopied] = useState(false);
+  const [state, setState] = useState<"idle" | "copied" | "failed">("idle");
 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(code);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error("Failed to copy!", err);
+      setState("copied");
+    } catch {
+      setState("failed");
     }
+    setTimeout(() => setState("idle"), 2000);
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <span className={styles.language}>{language || "code"}</span>
-        <button onClick={handleCopy} className={styles.copyBtn}>
-          {copied ? "Copied!" : "Copy"}
+        <button type="button" onClick={handleCopy} className={styles.copyBtn} aria-live="polite">
+          {state === "copied" ? "Copied" : state === "failed" ? "Copy failed" : "Copy"}
         </button>
       </div>
-      <pre className={styles.pre}>
+      {/* Focusable so keyboard users can scroll long lines. */}
+      <pre className={styles.pre} tabIndex={0} aria-label={`${language || "Code"} example`}>
         <code className={styles.code}>{code}</code>
       </pre>
     </div>
