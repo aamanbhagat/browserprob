@@ -605,7 +605,7 @@ export default function HomeDashboard() {
         <div className={styles.localNote}>
           <span className={styles.localNoteIcon}><LineIcon name="security" /></span>
           <div><strong>Your report stays local</strong>
-          <p>BrowserProbe does not store the assembled scan. Third-party monetization code still runs as disclosed.</p>
+          <p>BrowserProbe does not store the assembled scan. Only the IP and WebRTC checks contact a server.</p>
           <Link href="/privacy-policy">Read the privacy method</Link></div>
         </div>
       </aside>

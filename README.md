@@ -37,7 +37,7 @@ The unit suite covers browser parsing, Client Hint brand filtering, IP normaliza
 
 ## Privacy and network behavior
 
-Most checks run in the current tab. The public-IP check calls the first-party `/api/ip` route. The WebRTC check contacts Cloudflare’s public STUN endpoint to gather ICE candidates. BrowserProbe does not require accounts or include application-level report storage. The site loads the supplied `quge5.com` zone `273538` monetization tag and the supplied root worker for `3nbf4.com` zone `11662682`. The in-product privacy policy describes this network behavior and its implications.
+Most checks run in the current tab. The public-IP check calls the first-party `/api/ip` route. The WebRTC check contacts Cloudflare’s public STUN endpoint to gather ICE candidates. BrowserProbe does not require accounts or include application-level report storage. The in-product privacy policy describes this network behavior.
 
 Hosting and infrastructure providers may still process ordinary request metadata. See the in-product privacy policy for the complete disclosure.
 
@@ -50,4 +50,6 @@ npm run build
 npm start
 ```
 
-Production responses include a Content Security Policy, HSTS, clickjacking protection, a strict referrer policy, and cross-origin isolation headers. Re-run the test suite, dependency audit, and browser checks before each release.
+Production responses include a Content Security Policy, HSTS, clickjacking protection, a strict referrer policy, `Cross-Origin-Opener-Policy`, and `Cross-Origin-Resource-Policy` headers. There is no `Cross-Origin-Embedder-Policy`, so the site is not cross-origin isolated.
+
+`public/sw.js` is a kill-switch service worker that removes a third-party push worker an earlier ad integration registered in visitors' browsers. Keep it deployed until at least 2027-01-23. Re-run the test suite, dependency audit, and browser checks before each release.

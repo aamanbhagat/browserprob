@@ -13,10 +13,10 @@ export default function PrivacyPolicyPage() {
       <div className="container">
         <h1 className={styles.title}>Privacy Policy</h1>
         <div className={styles.content}>
-          <p><strong>Last updated:</strong> August 27, 2026</p>
+          <p><strong>Last updated:</strong> October 23, 2026</p>
 
           <h2>The Short Version</h2>
-          <p>BrowserProbe does not require an account or store the assembled diagnostic report in an application database. Most tests run in the current tab. The site does load a third-party monetization script and service-worker code; those providers receive ordinary request metadata and their code runs in the browser context.</p>
+          <p>BrowserProbe does not require an account or store the assembled diagnostic report in an application database. Most tests run in the current tab. BrowserProbe does not load third-party advertising or analytics scripts.</p>
 
           <h2>Diagnostic Results</h2>
           <p>Browser, display, storage, graphics, font, audio, and feature checks are computed in your browser. BrowserProbe does not include application code that uploads or persists the assembled report. If you choose to copy, print, or download a report, that action happens on your device.</p>
@@ -28,13 +28,13 @@ export default function PrivacyPolicyPage() {
           <p>The WebRTC test contacts Cloudflare&apos;s public STUN service at <code>stun.cloudflare.com</code> so the browser can gather ICE candidates. A STUN provider necessarily observes the network address making that request. BrowserProbe displays the candidates in the tab and does not send the completed comparison back to the application server.</p>
 
           <h2>Cookies</h2>
-          <p>BrowserProbe does not use account cookies. The cookie test creates a temporary first-party test cookie and immediately deletes it, and storage tests similarly create and remove temporary values. Third-party monetization code may use cookies or browser storage according to the provider&apos;s own configuration and policies.</p>
+          <p>BrowserProbe does not use account cookies. The cookie test creates a temporary first-party test cookie and immediately deletes it, and storage tests similarly create and remove temporary values.</p>
 
           <h2>Third-Party Services</h2>
-          <p>BrowserProbe loads a monetization tag from <code>quge5.com</code> using zone <code>273538</code>. The provider-supplied <code>/sw.js</code> imports service-worker code from <code>3nbf4.com</code> using zone <code>11662682</code>. Third-party JavaScript and service workers can process connection metadata, browser characteristics, page context, interactions, and storage identifiers under the provider&apos;s own policies. The WebRTC test also uses Cloudflare&apos;s public STUN service as described above. Links to GitHub open only when selected.</p>
+          <p>BrowserProbe previously loaded a third-party advertising tag and a service worker supplied by that ad provider. Both were removed in October 2026. The file at <code>/sw.js</code> now only unregisters that old service worker from browsers that still have it and deletes the caches it created. The WebRTC test uses Cloudflare&apos;s public STUN service as described above. Links to GitHub open only when selected.</p>
 
           <h2>Data Sharing</h2>
-          <p>BrowserProbe application code does not intentionally upload or sell the assembled diagnostic report. Because third-party monetization code executes on the same page, BrowserProbe cannot promise that page-visible values or browser metadata are inaccessible to that provider. Hosting, advertising, DNS, and network providers process connection metadata as necessary to deliver their services.</p>
+          <p>BrowserProbe application code does not upload or sell the assembled diagnostic report. Hosting, DNS, and network providers process connection metadata as necessary to deliver their services.</p>
 
           <h2>Changes to This Policy</h2>
           <p>We will update this page when the site&apos;s diagnostic, storage, or third-party service behavior changes.</p>

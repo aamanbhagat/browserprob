@@ -23,7 +23,7 @@ export default function AboutPage() {
           <h2>Our Principles</h2>
           <ul>
             <li><strong>Local by Default</strong> — Most probes run in the tab. The public IP check necessarily reaches our endpoint, and the WebRTC test uses a public STUN endpoint to gather ICE candidates.</li>
-            <li><strong>Third-Party Services Disclosed</strong> — Monetization and network providers are identified in the privacy policy so their role is not hidden.</li>
+            <li><strong>Third-Party Services Disclosed</strong> — Network providers used by the tests are identified in the privacy policy so their role is not hidden.</li>
             <li><strong>No Report Storage</strong> — BrowserProbe does not send the assembled diagnostic report back to the application server.</li>
             <li><strong>Free Forever</strong> — Every tool is completely free with no signup required.</li>
             <li><strong>Evidence-Based</strong> — Each finding includes a source, limitation, or confidence label where interpretation is required.</li>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import SiteChrome from "@/components/SiteChrome";
+import ServiceWorkerCleanup from "@/components/ServiceWorkerCleanup";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://browserprobe.app"),
@@ -83,74 +84,13 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
         />
-        <script
-          id="chrome-load-times-compat"
-          dangerouslySetInnerHTML={{
-            __html: `(() => {
-              const chromeApi = window.chrome;
-              if (!chromeApi || typeof chromeApi.loadTimes !== "function") return;
-              const toEpochSeconds = (milliseconds) =>
-                (performance.timeOrigin + milliseconds) / 1000;
-              Object.defineProperty(chromeApi, "loadTimes", {
-                configurable: true,
-                value: () => {
-                  const navigation = performance.getEntriesByType("navigation")[0];
-                  const paint = performance.getEntriesByName("first-paint")[0];
-                  const protocol = navigation?.nextHopProtocol || "";
-                  return {
-                    requestTime: toEpochSeconds(navigation?.requestStart || 0),
-                    startLoadTime: toEpochSeconds(navigation?.startTime || 0),
-                    commitLoadTime: toEpochSeconds(navigation?.responseStart || 0),
-                    finishDocumentLoadTime: toEpochSeconds(navigation?.domContentLoadedEventEnd || 0),
-                    finishLoadTime: toEpochSeconds(navigation?.loadEventEnd || performance.now()),
-                    firstPaintTime: toEpochSeconds(paint?.startTime || navigation?.responseEnd || 0),
-                    firstPaintAfterLoadTime: 0,
-                    navigationType: navigation?.type || "navigate",
-                    wasFetchedViaSpdy: protocol === "h2" || protocol === "h3",
-                    wasNpnNegotiated: Boolean(protocol),
-                    npnNegotiatedProtocol: protocol,
-                    wasAlternateProtocolAvailable: false,
-                    connectionInfo: protocol,
-                  };
-                },
-              });
-            })();`,
-          }}
-        />
-        <script
-          id="browserprobe-monetization-loader"
-          dangerouslySetInnerHTML={{
-            __html: `(() => {
-              const loadTag = () => {
-                if (document.querySelector('script[data-zone="273538"][src="https://quge5.com/88/tag.min.js"]')) return;
-                const tag = document.createElement("script");
-                tag.src = "https://quge5.com/88/tag.min.js";
-                tag.dataset.zone = "273538";
-                tag.async = true;
-                tag.fetchPriority = "low";
-                tag.setAttribute("data-cfasync", "false");
-                document.head.appendChild(tag);
-              };
-              const scheduleTag = () => {
-                setTimeout(() => {
-                  if ("requestIdleCallback" in window) {
-                    window.requestIdleCallback(loadTag, { timeout: 2000 });
-                    return;
-                  }
-                  loadTag();
-                }, 1500);
-              };
-              if (document.readyState === "complete") scheduleTag();
-              else window.addEventListener("load", scheduleTag, { once: true });
-            })();`,
-          }}
-        />
       </head>
       <body>
         <a href="#main-content" className="skipLink">Skip to content</a>
         <SiteChrome position="header" />
         <main id="main-content">{children}</main>
         <SiteChrome position="footer" />
+        <ServiceWorkerCleanup />
       </body>
     </html>
   );

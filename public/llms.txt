@@ -6,7 +6,7 @@
 
 - [Browser diagnostic report](https://browserprobe.app/): Run the complete browser inspection and review its evidence, confidence labels, and limitations.
 - [About the methodology](https://browserprobe.app/about): Learn how BrowserProbe separates observed browser values from interpretations.
-- [Privacy policy](https://browserprobe.app/privacy-policy): Review local processing, network requests, third-party monetization code, and report-storage practices.
+- [Privacy policy](https://browserprobe.app/privacy-policy): Review local processing, network requests, and report-storage practices.
 - [Browser privacy guides](https://browserprobe.app/blog): Read explanatory articles about browser fingerprinting and privacy signals.
 
 ## Identity and network tools
