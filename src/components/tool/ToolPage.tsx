@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Fragment, type ReactNode } from "react";
+import { Fragment, type CSSProperties, type ReactNode } from "react";
 import AdSlot from "@/components/ads/AdSlot";
 import JsonLd from "@/components/JsonLd";
 import Markdown, { renderInline, stripInlineMarkdown } from "@/components/Markdown";
@@ -10,6 +10,31 @@ import { AD_SLOTS } from "@/lib/ads";
 import { absoluteUrl, formatDate, SITE_NAME } from "@/lib/site";
 import { categories, getTool } from "@/lib/tools";
 import styles from "./ToolPage.module.css";
+
+// Space reserved for each tool's result while it runs, as [mobile, desktop] pixels: the measured final
+// height, capped at what is visible below the panel on a typical phone (520) or laptop (580) screen.
+// Holding that space means nothing visible moves when the result arrives (no layout shift). Tools
+// whose output length varies (IP location, WebRTC candidates, devices) reserve the full visible area.
+const RESULT_RESERVE: Record<string, [number, number]> = {
+  "what-is-my-browser": [520, 580],
+  "what-is-my-ip": [520, 420],
+  "client-hints": [520, 580],
+  "timezone-locale": [520, 580],
+  "webrtc-leak-test": [520, 580],
+  "cookies-test": [520, 580],
+  "canvas-fingerprint": [510, 385],
+  "audio-fingerprint": [470, 340],
+  "font-detection": [520, 455],
+  "do-not-track": [410, 285],
+  "screen-resolution": [520, 580],
+  "webgl-info": [520, 580],
+  "hardware-info": [520, 580],
+  "media-devices": [520, 410],
+  "connection-speed": [520, 580],
+  "javascript-info": [520, 580],
+  "browser-features": [520, 580],
+  "browser-plugins": [445, 315],
+};
 
 export function toolMetadata(slug: string): Metadata {
   const tool = getTool(slug);
@@ -83,7 +108,11 @@ export default function ToolPage({ slug, children, noscriptMessage }: { slug: st
           <p className={styles.lead}>{tool.lead}</p>
         </header>
 
-        <section className={styles.results} aria-label="Your results">
+        <section
+          className={styles.results}
+          aria-label="Your results"
+          style={{ "--reserve-sm": `${(RESULT_RESERVE[slug] ?? [520, 580])[0]}px`, "--reserve-lg": `${(RESULT_RESERVE[slug] ?? [520, 580])[1]}px` } as CSSProperties}
+        >
           <noscript>
             <p className={styles.noscript}>
               {noscriptMessage ??

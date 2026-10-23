@@ -1,11 +1,19 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import Script from "next/script";
+import { Atkinson_Hyperlegible, IBM_Plex_Mono, Schibsted_Grotesk } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import ServiceWorkerCleanup from "@/components/ServiceWorkerCleanup";
 import { ADS_ENABLED, ADSENSE_CLIENT, ADSENSE_SCRIPT_SRC } from "@/lib/ads";
+
+const displayFace = Schibsted_Grotesk({ subsets: ["latin"], weight: ["700", "800"], variable: "--font-display-face", display: "swap" });
+// Atkinson Hyperlegible was designed for low-vision readability; next/font has fallback metrics for it, so the
+// swap from the system font does not shift the layout.
+const bodyFace = Atkinson_Hyperlegible({ subsets: ["latin"], weight: ["400", "700"], variable: "--font-body-face", display: "swap" });
+// Labels and values only; not needed for the first paint, so it is not preloaded.
+const monoFace = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "600"], variable: "--font-mono-face", display: "swap", preload: false });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://browserprobe.app"),
@@ -88,7 +96,7 @@ export default async function RootLayout({
   };
 
   return (
-    <html lang="en">
+    <html lang="en" className={`${displayFace.variable} ${bodyFace.variable} ${monoFace.variable}`}>
       <head>
         <script
           type="application/ld+json"

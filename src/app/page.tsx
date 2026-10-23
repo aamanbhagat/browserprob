@@ -16,6 +16,20 @@ export const metadata: Metadata = {
 
 const categoryOrder: ToolCategory[] = ["identity", "privacy", "hardware", "features"];
 
+// Every row is something the home page check actually reads (see components/home/ScanReport.tsx).
+const LEDGER = [
+  { what: "Browser and version", source: "User-agent string, Client Hints" },
+  { what: "IP address", source: "Your request to this site's server" },
+  { what: "WebRTC addresses", source: "STUN request to Cloudflare" },
+  { what: "Screen and window", source: "screen, window sizes, pixel ratio" },
+  { what: "Time zone and languages", source: "Intl API, navigator.languages" },
+  { what: "Storage", source: "Test cookie, Web Storage, IndexedDB" },
+  { what: "Canvas and audio samples", source: "Canvas 2D, offline Web Audio" },
+  { what: "Fonts", source: "Text measurement, 40 names" },
+  { what: "Graphics", source: "WebGL renderer string" },
+  { what: "Privacy signals", source: "Do Not Track, Global Privacy Control" },
+];
+
 export default function HomePage() {
   const structuredData = {
     "@context": "https://schema.org",
@@ -29,16 +43,30 @@ export default function HomePage() {
     <div className={styles.home}>
       <JsonLd data={structuredData} />
       <section className={`container ${styles.hero}`} aria-labelledby="home-title">
-        <p className={styles.eyebrow}>Free browser diagnostics</p>
-        <h1 id="home-title" className={styles.title}>See what your browser tells every website.</h1>
-        <p className={styles.intro}>
-          BrowserProbe reads the same values any page can read: your browser and version, IP address, WebRTC addresses, screen,
-          time zone, storage, and the canvas, audio and font signals used for fingerprinting. Each result says where it came from
-          and what it cannot prove.
-        </p>
-        <div id="report" className={styles.scan}>
-          <ScanReport />
+        <div className={styles.heroText}>
+          <p className={styles.eyebrow}>Free browser diagnostics</p>
+          <h1 id="home-title" className={styles.title}>See what your browser tells every website.</h1>
+          <p className={styles.intro}>
+            BrowserProbe reads the same values any page can read: your browser and version, IP address, WebRTC addresses,
+            screen, time zone, storage, and the canvas, audio and font signals used for fingerprinting. Each result says where it
+            came from and what it cannot prove.
+          </p>
+          <div id="report" className={styles.scan}>
+            <ScanReport />
+          </div>
         </div>
+
+        <aside className={styles.ledger} aria-labelledby="ledger-title">
+          <h2 id="ledger-title" className={styles.ledgerTitle}>What the check reads</h2>
+          <dl className={styles.ledgerList}>
+            {LEDGER.map((item) => (
+              <div key={item.what} className={styles.ledgerRow}>
+                <dt>{item.what}</dt>
+                <dd>{item.source}</dd>
+              </div>
+            ))}
+          </dl>
+        </aside>
       </section>
 
       <section id="tools" className={`container ${styles.section}`} aria-labelledby="tools-title">

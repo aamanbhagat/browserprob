@@ -22,7 +22,7 @@ export default function Header() {
     <header className={styles.header}>
       <div className={`container ${styles.inner}`}>
         <Link href="/" className={styles.logo} aria-label="BrowserProbe home" onClick={closeMenu}>
-          <span className={styles.logoMark} aria-hidden="true"><i /><i /><i /></span>
+          <span className={styles.logoMark} aria-hidden="true" />
           <span>BrowserProbe</span>
         </Link>
 

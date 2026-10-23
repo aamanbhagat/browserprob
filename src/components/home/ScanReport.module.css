@@ -7,9 +7,9 @@
 .primary {
   min-height: 52px;
   padding: 14px 26px;
-  background: var(--accent-blue);
+  background: var(--signal);
   border-radius: var(--radius-sm);
-  color: white;
+  color: var(--on-signal);
   font-size: 1.05rem;
   font-weight: 750;
 }
@@ -107,23 +107,23 @@
 }
 
 .pass {
-  background: #dff3ee;
-  color: #0b5a53;
+  background: var(--tint-ok);
+  color: var(--text-primary);
 }
 
 .review {
-  background: #fbe7dc;
-  color: #8d3712;
+  background: var(--tint-review);
+  color: var(--ink-review);
 }
 
 .limited {
-  background: #e9edf3;
-  color: #3d4c5f;
+  background: var(--tint-limited);
+  color: var(--text-secondary);
 }
 
 .info {
-  background: #e6edff;
-  color: #1c46b8;
+  background: var(--tint-info);
+  color: var(--ink-info);
 }
 
 .findingTitle {

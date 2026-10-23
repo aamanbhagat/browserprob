@@ -210,15 +210,15 @@
   align-items: center;
   min-height: 44px;
   padding: 10px 16px;
-  background: var(--accent-blue);
+  background: var(--signal);
   border-radius: var(--radius-sm);
-  color: white;
+  color: var(--on-signal);
   font-weight: 700;
 }
 
 .toolCardLink:hover {
-  background: var(--accent-blue-dark);
-  color: white;
+  background: var(--signal-strong);
+  color: var(--on-signal);
 }
 
 @media (min-width: 1100px) {

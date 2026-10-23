@@ -27,7 +27,7 @@ export const config = {
   matcher: [
     {
       // Pages only: not API routes, static assets, metadata files or link prefetches.
-      source: "/((?!api|_next/static|_next/image|favicon.ico|icon.svg|favicon.png|og-image.png|sw.js|ads.txt|robots.txt|sitemap.xml|manifest.webmanifest|llms.txt).*)",
+      source: "/((?!api|_next/static|_next/image|favicon.ico|icon.svg|favicon.png|icon-192.png|icon-512.png|og-image.png|sw.js|ads.txt|robots.txt|sitemap.xml|manifest.webmanifest|llms.txt).*)",
       missing: [
         { type: "header", key: "next-router-prefetch" },
         { type: "header", key: "purpose", value: "prefetch" },

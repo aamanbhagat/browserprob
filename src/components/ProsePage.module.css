@@ -107,10 +107,10 @@
 
 .placeholder {
   padding: 2px 6px;
-  background: #fff3c4;
-  border: 1px dashed #a07400;
+  background: var(--placeholder-bg);
+  border: 1px dashed currentColor;
   border-radius: 4px;
-  color: #5c4300;
+  color: var(--placeholder-ink);
   font-family: var(--font-mono), monospace;
   font-size: 0.9em;
 }

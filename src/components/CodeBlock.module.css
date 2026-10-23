@@ -30,7 +30,8 @@
   color: var(--text-secondary);
   background: transparent;
   border: 1px solid var(--border-subtle);
-  padding: 2px 8px;
+  min-height: 32px;
+  padding: 4px 10px;
   border-radius: 4px;
   cursor: pointer;
   transition: all var(--transition-fast);

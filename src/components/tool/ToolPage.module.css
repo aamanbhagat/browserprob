@@ -58,7 +58,14 @@
 }
 
 .results {
+  min-height: var(--reserve-sm, 0);
   margin-bottom: var(--space-2xl);
+}
+
+@media (min-width: 768px) {
+  .results {
+    min-height: var(--reserve-lg, 0);
+  }
 }
 
 .noscript {
