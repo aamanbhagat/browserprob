@@ -9,7 +9,7 @@ export interface WebRtcComparison {
 }
 
 /** Interprets WebRTC ICE results against the address this site saw for the page request. */
-export function compareWebRtcWithIp(rtc: WebRTCLeak, ip: Pick<IPInfo, "ip" | "version">): WebRtcComparison {
+export function compareWebRtcWithIp(rtc: WebRTCLeak, ip: Pick<IPInfo, "ip" | "version"> & { scope?: IPInfo["scope"] }): WebRtcComparison {
   if (!rtc.supported) {
     return { level: "ok", headline: "WebRTC is unavailable", detail: "This browser does not expose RTCPeerConnection, so pages cannot gather addresses through WebRTC." };
   }
@@ -23,9 +23,12 @@ export function compareWebRtcWithIp(rtc: WebRTCLeak, ip: Pick<IPInfo, "ip" | "ve
       detail: `WebRTC exposed ${rtc.privateIPs.join(", ")}. That describes your local network rather than your public route. Modern browsers normally hide it behind a random .local name, so a VPN client, extension or browser setting may be changing that behavior.`,
     };
   }
-  const differing = ip.ip ? rtc.publicIPs.filter((address) => address !== ip.ip) : rtc.publicIPs;
-  if (rtc.publicIPs.length > 0 && !ip.ip) {
-    return { level: "info", headline: "Public address seen, nothing to compare it with", detail: "WebRTC reported a public address, but this site could not determine the address of your page request, so the two cannot be compared." };
+  // A loopback or private page address (local development, or a proxy that hides the client) is not
+  // something a public STUN address can meaningfully be compared with.
+  const comparable = ip.ip && (!ip.scope || ip.scope === "public") ? ip.ip : null;
+  const differing = comparable ? rtc.publicIPs.filter((address) => address !== comparable) : rtc.publicIPs;
+  if (rtc.publicIPs.length > 0 && !comparable) {
+    return { level: "info", headline: "Public address seen, nothing to compare it with", detail: "WebRTC reported a public address, but this site did not see a public address for your page request, so the two cannot be compared." };
   }
   if (rtc.publicIPs.length > 0 && differing.length === 0) {
     return { level: "ok", headline: "WebRTC shows the same public address this site sees", detail: "No additional address was revealed: the STUN server saw the same address your page request came from." };

@@ -41,3 +41,17 @@ export function contentBlocks(content: string): string[] {
   }
   return blocks;
 }
+
+/**
+ * Splits content before the "## " heading nearest its middle, so something can be placed between two
+ * sections. Returns [content, ""] when there are fewer than three sections.
+ */
+export function splitAtMiddleHeading(content: string): [string, string] {
+  const lines = content.split("\n");
+  const headingLines = lines.flatMap((line, index) => (line.startsWith("## ") ? [index] : []));
+  if (headingLines.length < 3) return [content, ""];
+  const middle = lines.length / 2;
+  const candidates = headingLines.slice(1);
+  const split = candidates.reduce((best, index) => (Math.abs(index - middle) < Math.abs(best - middle) ? index : best), candidates[0]);
+  return [lines.slice(0, split).join("\n"), lines.slice(split).join("\n")];
+}

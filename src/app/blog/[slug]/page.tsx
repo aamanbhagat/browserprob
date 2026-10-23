@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import AdSlot from "@/components/ads/AdSlot";
 import JsonLd from "@/components/JsonLd";
 import Markdown, { extractHeadings } from "@/components/Markdown";
 import TableOfContents from "@/components/TableOfContents";
 import { blogPosts, getPostBySlug } from "@/data/blog-posts";
+import { AD_SLOTS } from "@/lib/ads";
+import { splitAtMiddleHeading } from "@/lib/markdown-text";
 import { absoluteUrl, formatDate, SITE_NAME } from "@/lib/site";
 import { getTool } from "@/lib/tools";
 import styles from "../blog.module.css";
@@ -35,6 +38,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const url = absoluteUrl(`/blog/${post.slug}`);
   const tool = getTool(post.relatedTool);
   const headings = extractHeadings(post.content);
+  const [firstHalf, secondHalf] = splitAtMiddleHeading(post.content);
   const structuredData = {
     "@context": "https://schema.org",
     "@graph": [
@@ -89,7 +93,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         </aside>
 
         <div className={styles.postBody}>
-          <Markdown content={post.content} />
+          <Markdown content={firstHalf} />
+          <AdSlot slot={AD_SLOTS.guideMiddle} />
+          {secondHalf && <Markdown content={secondHalf} />}
 
           <section className={styles.sources} aria-labelledby="sources-title">
             <h2 id="sources-title">Sources</h2>
@@ -99,6 +105,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
               ))}
             </ol>
           </section>
+
+          <AdSlot slot={AD_SLOTS.guideEnd} />
         </div>
 
         <aside className={styles.sidebar} aria-label="Related test">

@@ -1,24 +1,22 @@
 import type { NextConfig } from "next";
+import { staticCsp } from "./src/lib/csp";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
-// Production traffic is HTTPS-only (HSTS). Locally, `next start` serves plain HTTP and WebKit
-// would upgrade every asset request to https://localhost, so only send this on Vercel.
-const upgradeInsecureRequests = process.env.VERCEL ? ["upgrade-insecure-requests"] : [];
-const contentSecurityPolicy = [
-  "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isDevelopment ? " 'unsafe-eval'" : ""}`,
-  "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob:",
-  "font-src 'self'",
-  `connect-src 'self' stun:${isDevelopment ? " ws: wss:" : ""}`,
-  "media-src 'self' blob:",
-  "worker-src 'self' blob:",
-  "object-src 'none'",
-  "base-uri 'self'",
-  "form-action 'self'",
-  "frame-ancestors 'none'",
-  ...upgradeInsecureRequests,
-].join("; ");
+const adsEnabled = process.env.NEXT_PUBLIC_ADS_ENABLED === "true";
+
+const securityHeaders = [
+  { key: "X-Frame-Options", value: "DENY" },
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
+  // Ad clicks open the advertiser's page in a new window from a cross-origin ad frame. As a precaution,
+  // keep the opener relationship for such popups when ads are on; isolate fully otherwise.
+  { key: "Cross-Origin-Opener-Policy", value: adsEnabled ? "same-origin-allow-popups" : "same-origin" },
+  { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
+  { key: "Permissions-Policy", value: "geolocation=(), payment=(), usb=(), bluetooth=()" },
+  // With ads on, src/proxy.ts sends a per-request nonce-based policy instead (Google supports no other kind).
+  ...(adsEnabled ? [] : [{ key: "Content-Security-Policy", value: staticCsp({ isDevelopment, onVercel: Boolean(process.env.VERCEL) }) }]),
+];
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -33,16 +31,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/(.*)",
-        headers: [
-          { key: "X-Frame-Options", value: "DENY" },
-          { key: "X-Content-Type-Options", value: "nosniff" },
-          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-          { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
-          { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
-          { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
-          { key: "Permissions-Policy", value: "geolocation=(), payment=(), usb=(), bluetooth=()" },
-          { key: "Content-Security-Policy", value: contentSecurityPolicy },
-        ],
+        headers: securityHeaders,
       },
     ];
   },

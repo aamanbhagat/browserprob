@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
+import Script from "next/script";
 import "./globals.css";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import ServiceWorkerCleanup from "@/components/ServiceWorkerCleanup";
+import { ADS_ENABLED, ADSENSE_CLIENT, ADSENSE_SCRIPT_SRC } from "@/lib/ads";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://browserprobe.app"),
@@ -44,6 +47,8 @@ export const metadata: Metadata = {
     description:
       "Generate a clear browser diagnostic report with evidence-based privacy, IP, fingerprinting, screen, storage, and feature checks.",
   },
+  // Google's AdSense site-ownership tag. It loads nothing; ads only load when NEXT_PUBLIC_ADS_ENABLED is set.
+  other: { "google-adsense-account": ADSENSE_CLIENT },
   robots: {
     index: true,
     follow: true,
@@ -57,11 +62,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Reading request headers makes every page dynamic, which nonce-based CSP requires; without ads the
+  // pages stay static.
+  const nonce = ADS_ENABLED ? ((await headers()).get("x-nonce") ?? undefined) : undefined;
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
@@ -92,6 +101,9 @@ export default function RootLayout({
         <main id="main-content">{children}</main>
         <Footer />
         <ServiceWorkerCleanup />
+        {ADS_ENABLED && (
+          <Script id="adsense-loader" src={ADSENSE_SCRIPT_SRC} strategy="afterInteractive" crossOrigin="anonymous" nonce={nonce} />
+        )}
       </body>
     </html>
   );

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ConsentChoicesLink from "@/components/ads/ConsentChoicesLink";
 import { SOURCE_URL } from "@/lib/site";
 import { tools } from "@/lib/tools";
 import styles from "./Footer.module.css";
@@ -48,6 +49,7 @@ export default function Footer() {
               <li><Link href="/privacy-policy" className={styles.link}>Privacy policy</Link></li>
               <li><Link href="/terms" className={styles.link}>Terms of use</Link></li>
               <li><Link href="/advertising-and-cookies" className={styles.link}>Advertising and cookies</Link></li>
+              <ConsentChoicesLink className={styles.linkButton} />
             </ul>
           </nav>
         </div>

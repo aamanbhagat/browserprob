@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import AdSlot from "@/components/ads/AdSlot";
 import JsonLd from "@/components/JsonLd";
 import ToolCard from "@/components/ToolCard";
 import ScanReport from "@/components/home/ScanReport";
 import { blogPosts } from "@/data/blog-posts";
+import { AD_SLOTS } from "@/lib/ads";
 import { absoluteUrl, SITE_NAME } from "@/lib/site";
 import { categories, tools, type ToolCategory } from "@/lib/tools";
 import styles from "./page.module.css";
@@ -51,6 +53,10 @@ export default function HomePage() {
           </div>
         ))}
       </section>
+
+      <div className="container">
+        <AdSlot slot={AD_SLOTS.home} />
+      </div>
 
       <section className={`container ${styles.section}`} aria-labelledby="how-title">
         <h2 id="how-title" className={styles.sectionTitle}>How the check works</h2>

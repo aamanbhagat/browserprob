@@ -34,6 +34,11 @@ describe("compareWebRtcWithIp", () => {
     expect(result.detail).toContain("Dual-stack");
   });
 
+  it("does not compare against a loopback or private page address", () => {
+    const result = compareWebRtcWithIp(rtc({ publicIPs: ["203.0.113.50"], status: "public-address-visible" }), { ip: "::1", version: 6, scope: "loopback" });
+    expect(result.headline).toBe("Public address seen, nothing to compare it with");
+  });
+
   it("cannot compare without the page's address", () => {
     expect(compareWebRtcWithIp(rtc({ publicIPs: ["8.8.8.8"] }), { ip: null, version: null }).headline).toBe("Public address seen, nothing to compare it with");
   });

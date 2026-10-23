@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { Fragment, type ReactNode } from "react";
+import AdSlot from "@/components/ads/AdSlot";
 import JsonLd from "@/components/JsonLd";
 import Markdown, { renderInline, stripInlineMarkdown } from "@/components/Markdown";
 import RelatedTools from "@/components/RelatedTools";
 import { getToolContent } from "@/content/tools";
+import { AD_SLOTS } from "@/lib/ads";
 import { absoluteUrl, formatDate, SITE_NAME } from "@/lib/site";
 import { categories, getTool } from "@/lib/tools";
 import styles from "./ToolPage.module.css";
@@ -93,11 +95,17 @@ export default function ToolPage({ slug, children, noscriptMessage }: { slug: st
 
         <div className={styles.body}>
           {content.sections.map((section) => (
-            <section key={section.id} id={section.id} className={styles.section} aria-labelledby={`${section.id}-title`}>
-              <h2 id={`${section.id}-title`} className={styles.sectionTitle}>{section.heading}</h2>
-              <Markdown content={section.body} />
-            </section>
+            <Fragment key={section.id}>
+              <section id={section.id} className={styles.section} aria-labelledby={`${section.id}-title`}>
+                <h2 id={`${section.id}-title`} className={styles.sectionTitle}>{section.heading}</h2>
+                <Markdown content={section.body} />
+              </section>
+              {/* Between explanatory sections, well below the result panel and its buttons. */}
+              {section.id === "reading" && <AdSlot slot={AD_SLOTS.toolMiddle} />}
+            </Fragment>
           ))}
+
+          <AdSlot slot={AD_SLOTS.toolEnd} />
 
           {content.faq.length > 0 && (
             <section id="faq" className={styles.section} aria-labelledby="faq-title">
