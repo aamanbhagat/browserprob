@@ -1,38 +1,45 @@
 # BrowserProbe
 
-> BrowserProbe is a free browser-diagnostics website that reports what the current browser exposes through standard web APIs. Results describe the current session and should not be treated as verified physical-device identity, proof of fingerprint uniqueness, or a guarantee of anonymity.
+> BrowserProbe is a free browser-diagnostics website. Its tests read what any web page can read about the current browser, device and network connection, and explain what each result does and does not prove. Results are computed in the visitor's browser and are not stored. There are no uniqueness or privacy scores.
 
 ## Main pages
 
-- [Browser diagnostic report](https://browserprobe.app/): Run the complete browser inspection and review its evidence, confidence labels, and limitations.
-- [About the methodology](https://browserprobe.app/about): Learn how BrowserProbe separates observed browser values from interpretations.
-- [Privacy policy](https://browserprobe.app/privacy-policy): Review local processing, network requests, and report-storage practices.
-- [Browser privacy guides](https://browserprobe.app/blog): Read explanatory articles about browser fingerprinting and privacy signals.
+- [Browser check](https://browserprobe.app/): A click-to-run summary of the main signals, with links to each test.
+- [All tests](https://browserprobe.app/tools): Every test, grouped by topic.
+- [Guides](https://browserprobe.app/blog): Explanations of fingerprinting, WebRTC leaks, IP addresses, cookies and storage, Client Hints, GPU and screen signals, with sources.
+- [About and method](https://browserprobe.app/about): Who runs the site, how the tests work and how explanations are checked.
+- [Privacy policy](https://browserprobe.app/privacy-policy): Exactly which data leaves the browser and who receives it.
 
-## Identity and network tools
+## Identity and network
 
-- [What Is My Browser?](https://browserprobe.app/tools/what-is-my-browser): Browser name, version, engine, platform hints, and user agent.
-- [What Is My IP Address?](https://browserprobe.app/tools/what-is-my-ip): Public request address and IP-family interpretation.
-- [Timezone and Locale](https://browserprobe.app/tools/timezone-locale): Timezone, offset, locale, and browser language preferences.
-- [WebRTC Address Test](https://browserprobe.app/tools/webrtc-leak-test): ICE candidates with public-IP comparison and explicit limitations.
+- [What Is My Browser?](https://browserprobe.app/tools/what-is-my-browser): Browser, engine, platform and the reduced user-agent string.
+- [What Is My IP Address?](https://browserprobe.app/tools/what-is-my-ip): The public address of the request, its family and range.
+- [User-Agent Client Hints](https://browserprobe.app/tools/client-hints): Brands and high-entropy hints in Chromium browsers.
+- [Timezone and locale](https://browserprobe.app/tools/timezone-locale): Time zone, languages and formats, compared with the IP's time zone.
 
-## Privacy and fingerprinting tools
+## Privacy and fingerprinting
 
-- [Cookies Test](https://browserprobe.app/tools/cookies-test): First-party cookie and web-storage availability.
-- [Canvas Fingerprint Test](https://browserprobe.app/tools/canvas-fingerprint): A repeatable identifier for one canvas rendering sample.
-- [Audio Fingerprint Test](https://browserprobe.app/tools/audio-fingerprint): A repeatable identifier for one Web Audio rendering sample.
-- [Font Detection](https://browserprobe.app/tools/font-detection): Font names distinguishable through text-metric comparisons.
-- [Do Not Track Test](https://browserprobe.app/tools/do-not-track): DNT and Global Privacy Control signals.
+- [WebRTC leak test](https://browserprobe.app/tools/webrtc-leak-test): ICE candidates compared with the address of the page request.
+- [Cookies and storage](https://browserprobe.app/tools/cookies-test): Which first-party storage mechanisms work, plus quota.
+- [Canvas fingerprint test](https://browserprobe.app/tools/canvas-fingerprint): A canvas sample ID and a per-read noise check.
+- [Audio fingerprint test](https://browserprobe.app/tools/audio-fingerprint): An offline Web Audio sample ID and a stability check.
+- [Font detection](https://browserprobe.app/tools/font-detection): Which of 40 font names are distinguishable.
+- [Do Not Track and GPC](https://browserprobe.app/tools/do-not-track): The privacy signals the browser sends.
 
-## Hardware and feature tools
+## Hardware and display
 
-- [Screen Resolution Test](https://browserprobe.app/tools/screen-resolution): Screen, viewport, color depth, pixel ratio, and touch support.
-- [WebGL Information](https://browserprobe.app/tools/webgl-info): WebGL support, renderer strings, limits, and extensions.
-- [Hardware Information](https://browserprobe.app/tools/hardware-info): Browser-exposed concurrency, memory, GPU, touch, and battery hints.
-- [Media Devices Detection](https://browserprobe.app/tools/media-devices): Permission-limited media-device counts and labels.
-- [JavaScript Detection](https://browserprobe.app/tools/javascript-info): JavaScript runtime and selected platform capabilities.
-- [Browser Features Support](https://browserprobe.app/tools/browser-features): Availability of selected modern web APIs.
+- [Screen resolution](https://browserprobe.app/tools/screen-resolution): Screen, viewport, pixel ratio, colour and display preferences.
+- [WebGL and WebGPU](https://browserprobe.app/tools/webgl-info): GPU renderer strings, limits and adapter info.
+- [Hardware information](https://browserprobe.app/tools/hardware-info): CPU threads, rounded memory, GPU, touch and battery.
+- [Media devices](https://browserprobe.app/tools/media-devices): Cameras, microphones and speakers visible to pages.
+- [Connection information](https://browserprobe.app/tools/connection-speed): Network estimates and page-load timing (not a speed test).
+
+## Features and support
+
+- [Is JavaScript enabled?](https://browserprobe.app/tools/javascript-info): JavaScript status and ES2015–ES2025 built-ins.
+- [Browser feature support](https://browserprobe.app/tools/browser-features): Which web platform APIs exist.
+- [Plugins and PDF viewer](https://browserprobe.app/tools/browser-plugins): navigator.plugins and inline PDF support.
 
 ## Project
 
-- [Source code](https://github.com/aamanbhagat/browserprob): Inspect the implementation and detection methodology.
+- [Source code](https://github.com/aamanbhagat/browserprob)

@@ -87,3 +87,16 @@ export async function readClientHints(uaData: UADataLike | undefined): Promise<C
 export function detectClientHints(): Promise<ClientHintsInfo> {
   return readClientHints((navigator as Navigator & { userAgentData?: UADataLike }).userAgentData);
 }
+
+/**
+ * Turns a Windows platformVersion into a release name. Microsoft documents 1–10 as Windows 10 and 13 or
+ * higher as Windows 11: https://learn.microsoft.com/en-us/microsoft-edge/web-platform/how-to-detect-win11
+ */
+export function describePlatformVersion(platform: string, platformVersion: string | undefined): string | null {
+  if (platform !== "Windows" || !platformVersion) return null;
+  const major = parseInt(platformVersion.split(".")[0], 10);
+  if (!Number.isFinite(major)) return null;
+  if (major >= 13) return "Windows 11 or later";
+  if (major > 0) return "Windows 10";
+  return "Windows 8.1 or earlier";
+}

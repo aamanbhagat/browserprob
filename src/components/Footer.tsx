@@ -1,9 +1,12 @@
 import Link from "next/link";
+import { SOURCE_URL } from "@/lib/site";
 import { tools } from "@/lib/tools";
 import styles from "./Footer.module.css";
 
+const POPULAR = ["what-is-my-ip", "what-is-my-browser", "webrtc-leak-test", "screen-resolution", "cookies-test", "canvas-fingerprint"];
+
 export default function Footer() {
-  const year = new Date().getFullYear();
+  const popular = POPULAR.map((slug) => tools.find((tool) => tool.slug === slug)!).filter(Boolean);
 
   return (
     <footer className={styles.footer}>
@@ -11,63 +14,47 @@ export default function Footer() {
         <div className={styles.grid}>
           <div className={styles.brand}>
             <Link href="/" className={styles.logo}>
-              <span className={styles.logoIcon}>BP</span>
+              <span className={styles.logoIcon} aria-hidden="true">BP</span>
               <span>BrowserProbe</span>
             </Link>
             <p className={styles.tagline}>
-              Evidence-based browser diagnostics that distinguish observed values, interpretations, and limitations.
+              Browser tests that show what websites can read, and explain what each result can and cannot prove.
             </p>
           </div>
 
-          <div className={styles.linkGroup}>
-            <h2 className={styles.groupTitle}>Popular Tools</h2>
+          <nav className={styles.linkGroup} aria-labelledby="footer-tests">
+            <h2 id="footer-tests" className={styles.groupTitle}>Popular tests</h2>
             <ul className={styles.linkList}>
-              {tools.slice(0, 6).map((tool) => (
-                <li key={tool.slug}>
-                  <Link href={`/tools/${tool.slug}`} className={styles.link}>
-                    {tool.shortName}
-                  </Link>
-                </li>
+              {popular.map((tool) => (
+                <li key={tool.slug}><Link href={`/tools/${tool.slug}`} className={styles.link}>{tool.name}</Link></li>
               ))}
+              <li><Link href="/tools" className={styles.link}>All {tools.length} tests</Link></li>
             </ul>
-          </div>
+          </nav>
 
-          <div className={styles.linkGroup}>
-            <h2 className={styles.groupTitle}>More Tools</h2>
+          <nav className={styles.linkGroup} aria-labelledby="footer-site">
+            <h2 id="footer-site" className={styles.groupTitle}>BrowserProbe</h2>
             <ul className={styles.linkList}>
-              {tools.slice(6, 12).map((tool) => (
-                <li key={tool.slug}>
-                  <Link href={`/tools/${tool.slug}`} className={styles.link}>
-                    {tool.shortName}
-                  </Link>
-                </li>
-              ))}
+              <li><Link href="/blog" className={styles.link}>Guides</Link></li>
+              <li><Link href="/about" className={styles.link}>About and method</Link></li>
+              <li><Link href="/contact" className={styles.link}>Contact</Link></li>
+              <li><a href={SOURCE_URL} className={styles.link} rel="noopener noreferrer">Source code</a></li>
             </ul>
-          </div>
+          </nav>
 
-          <div className={styles.linkGroup}>
-            <h2 className={styles.groupTitle}>Resources</h2>
+          <nav className={styles.linkGroup} aria-labelledby="footer-legal">
+            <h2 id="footer-legal" className={styles.groupTitle}>Legal</h2>
             <ul className={styles.linkList}>
-              <li>
-                <Link href="/blog" className={styles.link}>Blog</Link>
-              </li>
-              <li>
-                <Link href="/about" className={styles.link}>About</Link>
-              </li>
-              <li>
-                <Link href="/privacy-policy" className={styles.link}>Privacy Policy</Link>
-              </li>
+              <li><Link href="/privacy-policy" className={styles.link}>Privacy policy</Link></li>
+              <li><Link href="/terms" className={styles.link}>Terms of use</Link></li>
+              <li><Link href="/advertising-and-cookies" className={styles.link}>Advertising and cookies</Link></li>
             </ul>
-          </div>
+          </nav>
         </div>
 
         <div className={styles.bottom}>
-          <p className={styles.copyright}>
-            © {year} BrowserProbe.app — All rights reserved.
-          </p>
-          <p className={styles.powered}>
-            Open-source methodology · No app report database
-          </p>
+          <p className={styles.copyright}>© {new Date().getFullYear()} BrowserProbe</p>
+          <p className={styles.powered}>Results are computed in your browser and are not stored.</p>
         </div>
       </div>
     </footer>

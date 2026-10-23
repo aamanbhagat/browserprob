@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatHintValue, isGreaseBrand, readClientHints } from "./client-hints";
+import { describePlatformVersion, formatHintValue, isGreaseBrand, readClientHints } from "./client-hints";
 
 describe("Client Hints helpers", () => {
   it.each(["Not)A;Brand", "Not A(Brand", "Not_A Brand", "Not/A)Brand"])("treats %s as GREASE", (brand) => expect(isGreaseBrand(brand)).toBe(true));
@@ -33,4 +33,11 @@ describe("Client Hints helpers", () => {
     expect(result.error).toBe("NotAllowedError");
     expect(result.highEntropy).toEqual({});
   });
+});
+
+describe("describePlatformVersion", () => {
+  it.each([
+    ["Windows", "15.0.0", "Windows 11 or later"], ["Windows", "13.0.0", "Windows 11 or later"], ["Windows", "10.0.0", "Windows 10"],
+    ["Windows", "0.3.0", "Windows 8.1 or earlier"], ["macOS", "15.2.0", null], ["Windows", undefined, null],
+  ] as const)("%s %s", (platform, version, expected) => expect(describePlatformVersion(platform, version)).toBe(expected));
 });

@@ -3,7 +3,7 @@
 import DataRow from "@/components/DataRow";
 import ResultsPanel, { PanelGroup, PanelNote, Verdict } from "@/components/tool/ResultsPanel";
 import { useProbe } from "@/components/tool/useProbe";
-import { detectClientHints, HIGH_ENTROPY_HINTS } from "@/lib/detect/client-hints";
+import { describePlatformVersion, detectClientHints, HIGH_ENTROPY_HINTS } from "@/lib/detect/client-hints";
 
 const HINT_LABELS: Record<(typeof HIGH_ENTROPY_HINTS)[number], string> = {
   architecture: "CPU architecture",
@@ -37,6 +37,9 @@ export default function Results() {
             {HIGH_ENTROPY_HINTS.filter((hint) => value.highEntropy[hint]).map((hint) => (
               <DataRow key={hint} label={HINT_LABELS[hint]} value={value.highEntropy[hint]} />
             ))}
+            {describePlatformVersion(value.platform, value.highEntropy.platformVersion) && (
+              <DataRow label="Windows release" value={describePlatformVersion(value.platform, value.highEntropy.platformVersion)} mono={false} />
+            )}
           </PanelGroup>
           {value.withheld.length > 0 && (
             <PanelNote>

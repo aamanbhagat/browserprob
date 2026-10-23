@@ -10,7 +10,7 @@ describe("sitemap", () => {
   it("lists every tool, guide and static page once", () => {
     for (const tool of tools) expect(urls).toContain(`https://browserprobe.app/tools/${tool.slug}`);
     for (const post of blogPosts) expect(urls).toContain(`https://browserprobe.app/blog/${post.slug}`);
-    for (const path of ["", "/tools", "/blog", "/about", "/privacy-policy"]) expect(urls).toContain(`https://browserprobe.app${path}`);
+    for (const path of ["", "/tools", "/blog", "/about", "/contact", "/privacy-policy", "/terms", "/advertising-and-cookies"]) expect(urls).toContain(`https://browserprobe.app${path}`);
     expect(new Set(urls).size).toBe(urls.length);
   });
 

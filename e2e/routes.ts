@@ -1,7 +1,7 @@
 import { blogPosts } from "../src/data/blog-posts";
 import { tools } from "../src/lib/tools";
 
-export const STATIC_ROUTES = ["/", "/tools", "/blog", "/about", "/privacy-policy"];
+export const STATIC_ROUTES = ["/", "/tools", "/blog", "/about", "/contact", "/privacy-policy", "/terms", "/advertising-and-cookies"];
 export const TOOL_ROUTES = tools.map((tool) => `/tools/${tool.slug}`);
 export const GUIDE_ROUTES = blogPosts.map((post) => `/blog/${post.slug}`);
 export const ALL_ROUTES = [...STATIC_ROUTES, ...TOOL_ROUTES, ...GUIDE_ROUTES];

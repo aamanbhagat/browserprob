@@ -71,3 +71,13 @@ describe("font list", () => {
     expect(getTool("font-detection").lead).toContain(`${TEST_FONTS.length} common font names`);
   });
 });
+
+describe("feature list", () => {
+  it("matches the API count stated on the browser features page", async () => {
+    const { readFileSync } = await import("node:fs");
+    const source = readFileSync(new URL("./features.ts", import.meta.url), "utf8");
+    const count = (source.match(/\{ name: "/g) || []).length;
+    const { toolContentBySlug } = await import("@/content/tools");
+    expect(toolContentBySlug["browser-features"].sections[0].body).toContain(`${count} web platform APIs`);
+  });
+});

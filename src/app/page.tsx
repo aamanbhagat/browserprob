@@ -52,6 +52,58 @@ export default function HomePage() {
         ))}
       </section>
 
+      <section className={`container ${styles.section}`} aria-labelledby="how-title">
+        <h2 id="how-title" className={styles.sectionTitle}>How the check works</h2>
+        <div className={styles.columns}>
+          <div>
+            <h3 className={styles.columnTitle}>It reads what any page can read</h3>
+            <p>
+              The check calls the same browser APIs ordinary websites use: the user-agent string and Client Hints, screen and
+              window sizes, the Intl time zone, storage, Canvas, Web Audio, WebGL and font measurements. Nothing is installed and no
+              permission prompt appears.
+            </p>
+          </div>
+          <div>
+            <h3 className={styles.columnTitle}>Two parts use the network</h3>
+            <p>
+              Your IP address comes from one request to this site&apos;s own server, which sees where the request came from. The
+              WebRTC part asks Cloudflare&apos;s public STUN server which address it sees, because that is how WebRTC discovers
+              addresses. Everything else stays in the tab.
+            </p>
+          </div>
+          <div>
+            <h3 className={styles.columnTitle}>No score, just evidence</h3>
+            <p>
+              The report lists what was found and links to a page that explains each item, including what it cannot prove. It does
+              not rate how unique you are: that would need data about millions of browsers, which one visit to one site cannot
+              provide.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className={`container ${styles.section}`} aria-labelledby="home-faq-title">
+        <h2 id="home-faq-title" className={styles.sectionTitle}>Questions people ask first</h2>
+        <div className={styles.faq}>
+          <h3>Is anything saved when I run the check?</h3>
+          <p>
+            No. The results are built in your browser and disappear when you leave the page, unless you copy or download them
+            yourself. The <Link href="/privacy-policy">privacy policy</Link> lists the few places where data leaves your device.
+          </p>
+          <h3>Why do some rows say &quot;Not supported in this browser&quot;?</h3>
+          <p>
+            Browsers implement different APIs. Firefox and Safari, for example, have no Battery Status or Network Information API.
+            A missing value means your browser does not expose it, which is often a deliberate privacy choice.
+          </p>
+          <h3>Can this tell me whether my VPN works?</h3>
+          <p>
+            Partly. The <Link href="/tools/what-is-my-ip">IP address test</Link> shows the address websites see, and the{" "}
+            <Link href="/tools/webrtc-leak-test">WebRTC leak test</Link> checks whether WebRTC reveals a different one. Compare both
+            with the exit address your VPN provider shows.
+          </p>
+        </div>
+      </section>
+
       <section className={`container ${styles.section}`} aria-labelledby="guides-title">
         <h2 id="guides-title" className={styles.sectionTitle}>Guides</h2>
         <ul className={styles.guides}>

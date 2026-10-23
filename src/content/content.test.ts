@@ -29,6 +29,22 @@ describe("tool metadata", () => {
   });
 });
 
+describe("guides", () => {
+  it("cite sources, link a real tool and carry valid dates", () => {
+    for (const post of blogPosts) {
+      expect(post.sources.length, post.slug).toBeGreaterThanOrEqual(3);
+      expect(tools.some((tool) => tool.slug === post.relatedTool), post.slug).toBe(true);
+      expect(post.updated >= post.date, post.slug).toBe(true);
+      for (const source of post.sources) expect(source.url).toMatch(/^https:\/\//);
+    }
+  });
+
+  it("have unique titles and excerpts", () => {
+    expect(new Set(blogPosts.map((post) => post.title)).size).toBe(blogPosts.length);
+    expect(new Set(blogPosts.map((post) => post.excerpt)).size).toBe(blogPosts.length);
+  });
+});
+
 describe("tool and guide copy", () => {
   it("has at least one section and one FAQ entry per tool", () => {
     for (const [slug, content] of Object.entries(toolContentBySlug)) {

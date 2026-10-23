@@ -68,6 +68,41 @@
   text-transform: uppercase;
 }
 
+.columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px 32px;
+  margin-top: 16px;
+}
+
+.columns p,
+.faq p {
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+.columnTitle,
+.faq h3 {
+  margin-bottom: 6px;
+  color: var(--text-primary);
+  font-size: 1.08rem;
+}
+
+.faq {
+  max-width: 760px;
+  margin-top: 16px;
+}
+
+.faq h3:not(:first-child) {
+  margin-top: 20px;
+}
+
+.faq a,
+.columns a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .guides {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
