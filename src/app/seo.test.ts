@@ -29,8 +29,9 @@ describe("robots", () => {
     expect(forAgent("Mediapartners-Google")?.disallow).toBeUndefined();
   });
 
-  it("keeps the IP endpoint out of the index and points to the sitemap", () => {
-    expect(forAgent("*")?.disallow).toEqual(["/api/"]);
+  it("keeps generated assets out of the index and points to the sitemap", () => {
+    expect(forAgent("Googlebot")?.disallow).toEqual(expect.arrayContaining(["/api/", "/opengraph-image", "/twitter-image", "/favicon.ico"]));
+    expect(forAgent("*")?.disallow).toEqual(expect.arrayContaining(["/api/", "/opengraph-image", "/twitter-image", "/favicon.ico"]));
     expect(robots().sitemap).toBe("https://browserprobe.app/sitemap.xml");
   });
 });
