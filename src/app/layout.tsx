@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import Script from "next/script";
 import { Atkinson_Hyperlegible, IBM_Plex_Mono, Schibsted_Grotesk } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
@@ -112,6 +113,7 @@ export default async function RootLayout({
         {ADS_ENABLED && (
           <Script id="adsense-loader" src={ADSENSE_SCRIPT_SRC} strategy="afterInteractive" crossOrigin="anonymous" nonce={nonce} />
         )}
+        <Analytics />
       </body>
     </html>
   );
